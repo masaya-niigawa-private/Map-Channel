@@ -1,31 +1,20 @@
 <!DOCTYPE html>
 <html lang="ja">
 
-<head>
-<meta charset="UTF-8">
-<title>Sample_GoogleMap</title>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>喫煙所まっぷ</title>
 
-<script src="http://maps.google.com/maps/api/js?key=AIzaSyC2ESS8ztDAAxpYZDfxulply5HeSti6cNA&language=ja"></script>
+    <script src="/js/geolocation.js" defer></script>
+    <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2ESS8ztDAAxpYZDfxulply5HeSti6cNA&callback=initMap"></script>
+  </head>
 
-<style>
-html { height: 100% }
-body { height: 100% }
-#map { height: 100%; width: 100%}
-</style>
-</head>
+  <body>
+    <div id="map" style="width: 100%; height: 500px"></div>
+    <button onclick="getNow()">現在位置</button>
+  </body>
 
-<body>
-<div id="map"></div>
-
-<script>
-var MyLatLng = new google.maps.LatLng(35.6811673, 139.7670516);
-var Options = {
- zoom: 15,      //地図の縮尺値
- center: MyLatLng,    //地図の中心座標
- mapTypeId: 'roadmap'   //地図の種類
-};
-var map = new google.maps.Map(document.getElementById('map'), Options);
-</script>
-
-</body>
 </html>
