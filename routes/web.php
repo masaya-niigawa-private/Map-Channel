@@ -23,21 +23,21 @@ use App\Http\Controllers\MapController;
 
 Route::get('/hello', fn () => view('hello',['name'=>'まさや','time'=>'12']));
 
-Route::get('/', fn () => view('index'));
+// Route::get('/', fn () => view('index'));
 
 // 世界の時間
-Route::get('/world-time', [UtilityController::class,'worldTime'] );
+// Route::get('/world-time', [UtilityController::class,'worldTime'] );
 
-// おみくじ
-Route::get('/omikuji', [GameController::class,'omikuji']);
+// // おみくじ
+// Route::get('/omikuji', [GameController::class,'omikuji']);
 
-// モンティ・ホール問題
-Route::get('/monty-hall', [GameController::class,'montyHall']);
+// // モンティ・ホール問題
+// Route::get('/monty-hall', [GameController::class,'montyHall']);
 
-//フォーム
-Route::get('/form', [RequestController::class,'form']);
+// //フォーム
+// Route::get('/form', [RequestController::class,'form']);
 
-//フォーム確認
-Route::get('/query-strings', [RequestController::class,'queryStrings']);
+// //フォーム確認
+// Route::get('/query-strings', [RequestController::class,'queryStrings']);
 
-Route::get('/smoke-area', [MapController::class,'showMap'] );
+Route::get('/', [MapController::class,'showMap'] );
