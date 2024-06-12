@@ -1,46 +1,69 @@
-// 初回で現在地を取得して反映
+
+// 初期表示時に現在地を表示する
 function initMap() {
+
+  var Marker;
+
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       function (position) {
+        //現在地座標を取得
         const latitube = position.coords.latitude;
         const longitude = position.coords.longitude;
+        const latlng = new google.maps.LatLng(latitube, longitude);
 
-        // LatLngは中心を指定するクラス
-        const latlng = new google.maps.LatLng(latitube, longitude); //中心の緯度, 経度
-
-        // new google.maps.Map で新規マップ作成
-        // オプションでズームとか真ん中とか設定できる
+        // マップ生成
         const map = new google.maps.Map(document.getElementById("map"), {
-          zoom: 14, //ズームの調整
-          center: latlng, // 中心の設定
+          zoom: 12,
+          center: latlng,
         });
 
-        // 地図上の赤いマーカーの場所
-        new google.maps.Marker({
-          position: latlng,
-          map: map,
+        //初期表示時のマーカーは不要かもね、、（クリックイベントした時で良い）
+        //マーカーの設置
+        // new google.maps.Marker({
+        //   position: latlng,
+        //   map: map,
+        // });
+
+        //クリックイベント
+        //①クリックした地点にマーカー立てる
+        //②マーカーの緯度経度を取得する
+        //③取得した緯度経度をhtmlに表示する
+
+        //試作No.3（2024/06/08）
+        map.addListener('click', function (event) {
+          if (Marker) { Marker.setMap(null) };
+          Marker = new google.maps.Marker({
+            position: event.latLng,
+            draggable: true,
+            map: map
+          });
+          infotable(Marker.getPosition().lat(),
+            Marker.getPosition().lng());
         });
+
       },
       function (error) {
         alert("エラーです！");
       }
     );
+    // ブラウザがgeolocation_APIに対応していない場合
   } else {
     alert("このブウラウザは位置情報に対応していません。");
   }
 }
 
-// ボタンを押すと現在地を反映
+//★★改修ポイント★★
+// マップ初期表示＆ボタン押下で処理が被ってるので、⇒１つのメソッドにまとめる
+
+// 現在位置を反映ボタン
 const getNow = () => {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       function (position) {
         const map = new google.maps.Map(document.getElementById("map"));
-
         const latitube = position.coords.latitude;
         const longitude = position.coords.longitude;
-
         const latlng = new google.maps.LatLng(latitube, longitude);
 
         const opts = {
@@ -64,3 +87,15 @@ const getNow = () => {
     alert("このブウラウザは位置情報に対応していません。");
   }
 };
+
+
+/* 緯度経度を表示する */
+// function getClickLatLng(latlng) {
+//   alert('緯度: ' + latlng.lat + ' 経度: ' + latlng.lng);
+// }
+
+/* 緯度経度を表示する */
+function infotable(ido, keido ) {
+  document.getElementById('id_ido').value = ido;
+  document.getElementById('id_keido').value = keido;
+}

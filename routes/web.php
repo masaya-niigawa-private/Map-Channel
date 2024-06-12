@@ -1,9 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UtilityController;
-use App\Http\Controllers\GameController;
-use App\Http\Controllers\RequestController;
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\MapController;
 
 /*
@@ -21,23 +19,9 @@ use App\Http\Controllers\MapController;
 //     return view('welcome');
 // });
 
-Route::get('/hello', fn () => view('hello',['name'=>'まさや','time'=>'12']));
-
-// Route::get('/', fn () => view('index'));
-
-// 世界の時間
-// Route::get('/world-time', [UtilityController::class,'worldTime'] );
-
-// // おみくじ
-// Route::get('/omikuji', [GameController::class,'omikuji']);
-
-// // モンティ・ホール問題
-// Route::get('/monty-hall', [GameController::class,'montyHall']);
-
-// //フォーム
-// Route::get('/form', [RequestController::class,'form']);
-
-// //フォーム確認
-// Route::get('/query-strings', [RequestController::class,'queryStrings']);
-
+//マップ初期表示
 Route::get('/', [MapController::class,'showMap'] );
+
+//喫煙スポット登録
+Route::get('/form', [AdminController::class,'store'] )->name("form.post");
+Route::post('/form', [AdminController::class,'store'] )->name("form.post");
