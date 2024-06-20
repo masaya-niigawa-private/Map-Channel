@@ -6,56 +6,56 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>喫煙所まっぷ</title>
-
-  <script src="/js/geolocation.js" defer></script>
-  <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2ESS8ztDAAxpYZDfxulply5HeSti6cNA&callback=initMap"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+  <script src="/js/geolocation.js"></script>
 </head>
 
 <body>
   <div id="map" style="width: 100%; height: 500px"></div>
+  <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2ESS8ztDAAxpYZDfxulply5HeSti6cNA&callback=initMap"></script>
+  <button onclick="initMap()">現在地</button>
+  {{-- 登録済みの座標をグローバル変数にセット --}}
+  <script> var spotData = JSON.parse({!! json_encode($spots) !!});</script>
 
-  {{-- 座標取得＿確認用
-  <table style="width:100%;border:0">
-    <tr style="background-color:#dddddd">
-      <th style="width:20%">項目</th>
-      <th>情報</th>
-    </tr>
-    <tr>
-      <td>緯度</td>
-      <td id="id_ido"></td>
-    </tr>
-    <tr>
-      <td>経度</td>
-      <td id="id_keido"></td>
-    </tr>
-  </table> --}}
+{{-- バリデーションチェックエラー表示 --}}
+  @if($errors->any())
+  <div eroor_msg>
+    <ul>
+      @foreach ($errors -> all() as $error)
+      <li>{{$error}}</li>
+      @endforeach
+    </ul>
+  </div>
+  @endif
+  
+{{-- スポット登録 成功/失敗メッセージ表示 --}}
+  @if (session('message'))
+  <div class="alert alert-success">
+    {{ session('message') }}
+  </div>
+  @elseif (session('error'))
+  <div class="alert alert-danger">
+    {{ session('error') }}
+  </div>
+  @endif
 
-  <button onclick="getNow()">現在地反映</button>
-
-  {{-- 下記の２画面の切り替え制御する
-  ・登録フォーム
-  ・詳細情報 --}}
-
-  {{-- 登録画面 --}}
+  {{-- スポット登録画面 --}}
   <form action="/form" method="post">
     @csrf
     <div class="container border border-3 rounded">
-      <h2 class="text-center">ちるスポット登録</h2>
-      
+      <h3 class="text-center">スポット登録</h3>
       {{-- 緯度と経度をhiddenで送信 --}}
-      <input type="input" id="id_ido">
-      <input type="input" id="id_keido">
+      <input type="hidden" id='id_ido' name="ido">
+      <input type="hidden" id='id_keido' name="keido">
       <div class="mb-3">
-        <label for="name" class="form-label">場所名称</label>
-        <input type="text" class="form-control" id="name">
+        <label for="name" class="form-label">場所名（呼び名）</label>
+        <input type="text" class="form-control" name='spot_name'>
       </div>
       <div class="mb-3">
         <label for="photo" class="form-label">写真</label>
-        <input type="file" class="form-control" id="photo" rows="3">
+        <input type="file" class="form-control" name="photo_path" rows="3">
       </div>
       <div class="mb-3">
         <label for="evaluation" class="form-label">評価　</label>
@@ -69,14 +69,14 @@
         </select>
       </div>
       <div class="mb-3">
-        <label for="username" class="form-label">ニックネーム（登録者）</label>
-        <input type="text" class="form-control" id="username">
+        <label for="user_name" class="form-label">ニックネーム（登録者）</label>
+        <input type="text" class="form-control" name="user_name">
       </div>
-      <button type="submit" class="btn btn-primary">登録</button>
+      <button type="submit" id='submitButton' class="btn btn-primary" disabled>登録</button>
     </div>
   </form>
 
-  {{-- 詳細画面 --}}
+  {{-- スポット情報詳細画面 --}}
   {{-- <div class="container text-center">
     <div class="row">
       <div class="col-5 border">
@@ -92,9 +92,6 @@
       </div>
     </div>
   </div> --}}
-
-
-
 </body>
 
 </html>

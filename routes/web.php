@@ -15,13 +15,12 @@ use App\Http\Controllers\MapController;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
 //マップ初期表示
 Route::get('/', [MapController::class,'showMap'] );
 
-//喫煙スポット登録
-Route::get('/form', [AdminController::class,'store'] )->name("form.post");
-Route::post('/form', [AdminController::class,'store'] )->name("form.post");
+//スポット登録
+Route::post('/form', [AdminController::class,'store'] );
+
+//SELECTできてるか確認
+Route::get('/get', [AdminController::class,'get'] );
+

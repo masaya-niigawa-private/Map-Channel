@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Admin\AdminController;
 
 class MapController extends Controller
 {
     public function showMap()
     {
-        return view("map");
+        //スポット情報を取得しViewに渡す
+        $admin = new AdminController();
+        $spots = $admin->get();
+        
+        return view("map", compact('spots'));
     }
+
 }

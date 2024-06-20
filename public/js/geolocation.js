@@ -1,101 +1,91 @@
 
 // 初期表示時に現在地を表示する
 function initMap() {
-
-  var Marker;
-
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      function (position) {
-        //現在地座標を取得
-        const latitube = position.coords.latitude;
-        const longitude = position.coords.longitude;
-        const latlng = new google.maps.LatLng(latitube, longitude);
-
-        // マップ生成
-        const map = new google.maps.Map(document.getElementById("map"), {
-          zoom: 12,
-          center: latlng,
-        });
-
-        //初期表示時のマーカーは不要かもね、、（クリックイベントした時で良い）
-        //マーカーの設置
-        // new google.maps.Marker({
-        //   position: latlng,
-        //   map: map,
-        // });
-
-        //クリックイベント
-        //①クリックした地点にマーカー立てる
-        //②マーカーの緯度経度を取得する
-        //③取得した緯度経度をhtmlに表示する
-
-        //試作No.3（2024/06/08）
-        map.addListener('click', function (event) {
-          if (Marker) { Marker.setMap(null) };
-          Marker = new google.maps.Marker({
-            position: event.latLng,
-            draggable: true,
-            map: map
-          });
-          infotable(Marker.getPosition().lat(),
-            Marker.getPosition().lng());
-        });
-
-      },
-      function (error) {
-        alert("エラーです！");
-      }
-    );
-    // ブラウザがgeolocation_APIに対応していない場合
+    navigator.geolocation.getCurrentPosition(onGetPositionSuccess, onGetPositionError);
   } else {
-    alert("このブウラウザは位置情報に対応していません。");
+    alert("このブラウザは位置情報に対応していません。");
   }
 }
 
-//★★改修ポイント★★
-// マップ初期表示＆ボタン押下で処理が被ってるので、⇒１つのメソッドにまとめる
+// 現在地取得成功時のコールバック
+function onGetPositionSuccess(position) {
+  const latitude = position.coords.latitude;
+  const longitude = position.coords.longitude;
+  const latlng = new google.maps.LatLng(latitude, longitude);
 
-// 現在位置を反映ボタン
-const getNow = () => {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      function (position) {
-        const map = new google.maps.Map(document.getElementById("map"));
-        const latitube = position.coords.latitude;
-        const longitude = position.coords.longitude;
-        const latlng = new google.maps.LatLng(latitube, longitude);
+  const map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 12,
+    center: latlng,
+  });
 
-        const opts = {
-          zoom: 13,
-          center: latlng,
-        };
+  // 既存スポットのマーカーを生成
+  addExistingMarkers(map);
 
-        new google.maps.Marker({
-          position: latlng,
-          map: map,
-        });
+  // クリック地点のマーカーを設定
+  setupClickListener(map);
+}
 
-        // setOptionでオプションを上書き反映
-        map.setOptions(opts);
-      },
-      function (error) {
-        alert("エラーです！");
+// 現在地取得失敗時のコールバック
+function onGetPositionError() {
+  alert("位置情報の取得に失敗しました。");
+}
+
+// 既存スポットのマーカーを追加
+function addExistingMarkers(map) {
+  for (let i = 0; i < spotData.length; i++) {
+    const zahyou = { lat: parseFloat(spotData[i].ido), lng: parseFloat(spotData[i].keido) };
+    new google.maps.Marker({
+      position: zahyou,
+      map: map,
+      icon: {
+        url: "/icon/cannabis.png",
+        scaledSize: new google.maps.Size(60,60)
       }
-    );
-  } else {
-    alert("このブウラウザは位置情報に対応していません。");
+    });
   }
-};
+}
 
+// マップクリック時のマーカー生成と座標表示
+function setupClickListener(map) {
+  let marker;
+  map.addListener('click', function (event) {
+    if (marker) {
+      marker.setMap(null);
+    }
+    marker = new google.maps.Marker({
+      position: event.latLng,
+      map: map,
+    });
+    updateInfotable(marker.getPosition().lat(), marker.getPosition().lng());
+  });
+}
 
-/* 緯度経度を表示する */
-// function getClickLatLng(latlng) {
-//   alert('緯度: ' + latlng.lat + ' 経度: ' + latlng.lng);
-// }
+// 緯度と経度を<form>のhiddenに渡す
+function updateInfotable(lat, lng) {
+  document.getElementById('id_ido').value = lat;
+  document.getElementById('id_keido').value = lng;
+  buttonController();
+}
 
-/* 緯度経度を表示する */
-function infotable(ido, keido ) {
-  document.getElementById('id_ido').value = ido;
-  document.getElementById('id_keido').value = keido;
+// windowオブジェクトに入れる
+window.initMap = initMap;
+
+//登録ボタンの活性,非活性を制御
+function buttonController(){
+  const id_ido = document.getElementById('id_ido');
+  const submitButton = document.getElementById('submitButton');
+  //地図をクリック(=緯度と経度が選択)されたら、登録ボタンを活性にする
+  id_ido.addEventListener('input',function(){
+    if(id_ido.value.trim() !==''){
+      submitButton.disabled = false;
+    }else{
+      submitButton.disabled = true;
+    }
+  });
+  if (id_ido.value.trim() !== '') {
+    submitButton.disabled = false;
+  } else {
+    submitButton.disabled = true;
+  }
 }

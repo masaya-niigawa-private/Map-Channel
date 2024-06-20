@@ -4,22 +4,48 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Coordinate;
+use App\Models\Spot;
 
 class AdminController extends Controller
 {
+    //スポット登録
     public function store(Request $request)
     {
+        // バリデーションルールを定義
+        $validationRules = [
+            'ido' => 'required',
+            'keido' => 'required',
+            'spot_name' => 'required',
+            'evaluation' => 'required'
+        ];
+
+        // バリデーションチェック
+        $request->validate($validationRules);
+
         try {
-            $coordinate = new Coordinate();
-            
-            // 投稿フォームから送信されたデータを取得し、インスタンスの属性に代入する
-            $coordinate -> name = $request->input('coodinate');
-            $coordinate->save();
-            return redirect('/')->with('message', '登録が完了しました！');
-            
+            // Spotインスタンスを作成し、リクエストデータを設定
+            //$spot = Spot::create($request->only(['ido', 'keido', 'spot_name', 'evaluation']));
+            $spot = new Spot();
+            $spot->ido = $request['ido'];
+            $spot->keido = $request['keido'];
+            $spot->spot_name = $request['spot_name'];
+            $spot->evaluation = $request['evaluation'];
+            $spot->save();
+
+            // 成功時にリダイレクト
+            return redirect('/')->with('message', 'スポットが正常に登録されました。');
         } catch (\Exception $e) {
-            return back()->with('message', '登録に失敗しました。' . $e->getMessage());
+            // 例外発生時にエラーメッセージを表示
+            return back()->with('error', '登録に失敗しました。');
         }
+    }
+
+
+    //全スポットデータ取得
+    public function get()
+    {
+        $all_spots = Spot::all();
+        $all_spots_json = json_encode($all_spots);
+        return $all_spots_json;
     }
 }
