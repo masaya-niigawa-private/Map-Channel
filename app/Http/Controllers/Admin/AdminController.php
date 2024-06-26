@@ -30,6 +30,7 @@ class AdminController extends Controller
             $spot->keido = $request['keido'];
             $spot->spot_name = $request['spot_name'];
             $spot->evaluation = $request['evaluation'];
+            $spot->user_name = $request['user_name'];
             $spot->save();
 
             // 成功時にリダイレクト

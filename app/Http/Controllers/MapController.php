@@ -15,4 +15,9 @@ class MapController extends Controller
         return view("map", compact('spots'));
     }
 
+    //Matrixテスト
+    public function matrix(){
+        return view('matrix');
+    }
+
 }
