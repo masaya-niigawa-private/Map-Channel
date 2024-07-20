@@ -32,8 +32,8 @@ class AdminController extends Controller
             $spot->evaluation = $request['evaluation'];
             $spot->user_name = $request['user_name'];
             //画像
-            $image_path = $request->file('photo')->store('public/photo/');
-            $spot->photo_path = basename($image_path);
+            // $image_path = $request->file('photo')->store('public/photo/');
+            // $spot->photo_path = basename($image_path);
 
             $spot->save();
 
