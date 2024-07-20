@@ -21,6 +21,13 @@ Route::get('/', [MapController::class,'showMap'] );
 //スポット登録
 Route::post('/form', [AdminController::class,'store'] );
 
-//SELECTできてるか確認
-Route::get('/get', [AdminController::class,'get'] );
+//ChatGPTのサンプルソースの確認ルート
+Route::get('/test', [MapController::class,'test'] );
+
+//Matrixテスト
+Route::get('/matrix', [MapController::class,'matrix'] );
+
+//SPAテスト
+Route::get('/spa', [MapController::class,'spa'] );
+
 

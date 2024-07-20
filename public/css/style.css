@@ -92,3 +92,13 @@
   font-size: 14px;
   cursor: pointer;
 }
+
+
+.btn-primary{
+  background-color: rgb(52, 216, 52);
+  font-size: 20px;
+  margin: 5px 0;
+}
+.btn-primary:hover{
+  box-shadow: 5px 5px 0;
+}

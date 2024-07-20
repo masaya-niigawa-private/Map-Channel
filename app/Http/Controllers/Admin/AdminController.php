@@ -31,6 +31,10 @@ class AdminController extends Controller
             $spot->spot_name = $request['spot_name'];
             $spot->evaluation = $request['evaluation'];
             $spot->user_name = $request['user_name'];
+            //画像
+            $image_path = $request->file('photo')->store('public/photo/');
+            $spot->photo_path = basename($image_path);
+
             $spot->save();
 
             // 成功時にリダイレクト
@@ -49,4 +53,5 @@ class AdminController extends Controller
         $all_spots_json = json_encode($all_spots);
         return $all_spots_json;
     }
+    
 }

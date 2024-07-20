@@ -55,7 +55,7 @@
     @endif
 
     {{-- スポット登録フォーム --}}
-    <form action="/form" method="post">
+    <form action="/form" method="post" enctype='multipart/form-data'>
       @csrf
       <div class="container form border border-3 rounded">
         <h3 class="text-center">スポット登録</h3>
@@ -69,9 +69,9 @@
           </div>
         </div>
         <div class="mb-3 row">
-          <label for="photo_path" class="col-sm-4 col-form-label">写真</label>
+          <label for="photo" class="col-sm-4 col-form-label">写真</label>
           <div class="col-sm-8">
-            <input type="file" class="form-control" name="photo_path">
+            <input type="file" class="form-control" name="photo">
           </div>
         </div>
         <div class="mb-3 row">
@@ -107,11 +107,13 @@
             class="img-thumbnail" alt="画像なし">
         </div>
         <div class="col-md-7 border">
+          {{-- <img width="70" height="70" src="{{ asset('storage/photo' . $spots->photo_path) }}" /> --}}
           <img width="70" height="70" src="https://cdn.pixabay.com/photo/2018/08/10/20/38/walking-3597539_1280.jpg"
             class="img-thumbnail">　　到着予定時間：◯◯分
-          <button id="keiroButton" onclick="calcRoute()">経路は？</button>
-          <input type="hidden" id="start">
-          <input type="hidden" id="end">
+          <button id="keiroButton" onclick="calcRoute()">経路を表示して</button>
+          {{-- 経路表示用の目的地 --}}
+          <input type="hidden" id="end_ido">
+          <input type="hidden" id="end_keido">
           <div class="container">
             <div class="form-group">
               <label for="spot_name" class="form-label">場所：</label>

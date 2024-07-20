@@ -1,8 +1,10 @@
 let map;
+let latitude;
+let longitude;
 let latlng;
 let placesService;
 let directionsService;
-
+let directionsRenderer;
 
 // 初期表示時に現在地を表示する
 async function initMap() {
@@ -17,10 +19,10 @@ async function initMap() {
 function onGetPositionSuccess(position) {
   //経路オブジェクト
   directionsService = new google.maps.DirectionsService();
-  var directionsRenderer = new google.maps.DirectionsRenderer();
+  directionsRenderer = new google.maps.DirectionsRenderer();
 
-  const latitude = position.coords.latitude;
-  const longitude = position.coords.longitude;
+  latitude = position.coords.latitude;
+  longitude = position.coords.longitude;
   latlng = new google.maps.LatLng(latitude, longitude);
 
   map = new google.maps.Map(document.getElementById("map"), {
@@ -48,11 +50,12 @@ function onGetPositionError() {
 // 既存スポットのマーカーを追加
 function addExistingMarkers(map) {
   //マーカーの配列
-  var markers = [];
+  let markers = [];
 
+  //DBに保存されているスポット分を繰り返し
   for (let i = 0; i < spotData.length; i++) {
     const zahyou = { lat: parseFloat(spotData[i].ido), lng: parseFloat(spotData[i].keido) };
-    var marker = new google.maps.Marker({
+    let marker = new google.maps.Marker({
       position: zahyou,
       map: map,
       icon: {
@@ -62,8 +65,9 @@ function addExistingMarkers(map) {
     });
     //詳細情報を'syousai'ページに渡す
     marker.addListener('click', function() {
-      document.getElementById('start').value = latlng;
-      document.getElementById('end').value = new google.maps.LatLng(zahyou);
+      //経路表示用の'end_ido' 'end_keido'
+      document.getElementById('end_ido').value = parseFloat(spotData[i].ido);
+      document.getElementById('end_keido').value = parseFloat(spotData[i].keido);
       document.getElementById('spot_name').value = (spotData[i].spot_name);
       document.getElementById('evaluation').value = (spotData[i].evaluation);
       document.getElementById('user_name').value = (spotData[i].user_name);
@@ -167,14 +171,15 @@ function searchQuery(query) {
   });
 }
 
-//経路計算
+//経路をマップに表示
 function calcRoute() {
-  var start = document.getElementById('start').value;
-  var end = document.getElementById('end').value;
-  console.log(start);
-  console.log(end);
+  //コンストラクタの使い方→new google.maps.LatLng(経度,緯度)
+  const start = new google.maps.LatLng(latitude,longitude);
+  const end_ido = document.getElementById('end_ido').value;
+  const end_keido = document.getElementById('end_keido').value;
+  const end = new google.maps.LatLng(end_ido, end_keido);
   
-  var request = {
+  const request = {
     origin: start,
     destination: end,
     travelMode: 'DRIVING'
@@ -186,7 +191,7 @@ function calcRoute() {
   });
 }
 
-//ページナビゲーション
+//SPAするため
 function navigate(pageId) {
   // すべてのページを非表示にする
   const pages = document.querySelectorAll('.page');
