@@ -24,17 +24,18 @@ class AdminController extends Controller
 
         try {
             // Spotインスタンスを作成し、リクエストデータを設定
-            //$spot = Spot::create($request->only(['ido', 'keido', 'spot_name', 'evaluation']));
             $spot = new Spot();
             $spot->ido = $request['ido'];
             $spot->keido = $request['keido'];
             $spot->spot_name = $request['spot_name'];
             $spot->evaluation = $request['evaluation'];
             $spot->user_name = $request['user_name'];
-            //画像
-            // $image_path = $request->file('photo')->store('public/photo/');
-            // $spot->photo_path = basename($image_path);
+            //画像を storage/public/photoに保存し、フルパスを返す
+            $image_path = $request->file('photo')->store('public/photo/');
+            //画像ファイル名のみを$spot変数に入れる
+            $spot->photo_path = basename($image_path);
 
+            //DBに保存
             $spot->save();
 
             // 成功時にリダイレクト

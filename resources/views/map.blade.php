@@ -103,11 +103,9 @@
     <div class="container syousai mt-4">
       <div class="row">
         <div class="col-md-5 border">
-          <img width="80%" height="auto" src="https://news.walkerplus.com/article/1121391/11455268_615.jpg"
-            class="img-thumbnail" alt="画像なし">
+            <img id="spot-image" width="500" alt="Spot Image" />
         </div>
         <div class="col-md-7 border">
-          {{-- <img width="70" height="70" src="{{ asset('storage/photo' . $spots->photo_path) }}" /> --}}
           <img width="70" height="70" src="https://cdn.pixabay.com/photo/2018/08/10/20/38/walking-3597539_1280.jpg"
             class="img-thumbnail">　　到着予定時間：◯◯分
           <button id="keiroButton" onclick="calcRoute()">経路を表示して</button>
