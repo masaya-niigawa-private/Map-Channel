@@ -72,7 +72,7 @@ function addExistingMarkers(map) {
       document.getElementById('evaluation').value = (spotData[i].evaluation);
       document.getElementById('user_name').value = (spotData[i].user_name);
       document.getElementById('createc_at').value = (spotData[i].created_at).split('T')[0];
-      document.getElementById('spot-image').src = "storage/photo/" + (spotData[i].photo_path);
+      document.getElementById('spot-image').src = "https://mapappp.s3.ap-northeast-1.amazonaws.com/" + (spotData[i].photo_path);
       navigate('syosai');
     });
     //配列に入れる

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -14,11 +13,10 @@
   <script src="https://unpkg.com/@googlemaps/markerclusterer@2.5.3/dist/index.min.js"></script> --}}
   <script src="/js/geolocation.js"></script>
 </head>
-
 <body>
   <div id="map" style="width: 100%; height: 430px"></div>
   <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2ESS8ztDAAxpYZDfxulply5HeSti6cNA&libraries=places&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key={{$api_key}}&libraries=places&callback=initMap">
   </script>
   <button onclick="initMap()">現在位置</button>
   {{-- 検索Box --}}
@@ -30,7 +28,6 @@
   <script>
     var spotData = JSON.parse({!! json_encode($spots) !!});
   </script>
-
   <div id="toroku" class="page active">
     {{-- バリデーションチェックエラー表示 --}}
     @if($errors->any())
@@ -42,7 +39,6 @@
       </ul>
     </div>
     @endif
-
     {{-- スポット登録 成功/失敗メッセージ表示 --}}
     @if (session('message'))
     <div class="alert alert-success">
@@ -53,13 +49,11 @@
       {{ session('error') }}
     </div>
     @endif
-
     {{-- スポット登録フォーム --}}
     <form action="/form" method="post" enctype='multipart/form-data'>
       @csrf
       <div class="container form border border-3 rounded">
         <h3 class="text-center">スポット登録</h3>
-        {{-- 緯度と経度をhiddenで送信 --}}
         <input type="hidden" id='id_ido' name="ido">
         <input type="hidden" id='id_keido' name="keido">
         <div class="mb-3 row">
@@ -97,7 +91,6 @@
       </div>
     </form>
   </div>
-
   {{-- スポット詳細画面 --}}
   <div id="syosai" class="page">
     <div class="container syousai mt-4">
@@ -135,5 +128,4 @@
     </div>
   </div>
 </body>
-
 </html>

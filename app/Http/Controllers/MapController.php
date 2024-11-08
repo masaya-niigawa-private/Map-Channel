@@ -8,16 +8,25 @@ class MapController extends Controller
 {
     public function showMap()
     {
-        //スポット情報を取得しViewに渡す
+        //Spotテーブルを取得
         $admin = new AdminController();
         $spots = $admin->get();
-        
-        return view("map", compact('spots'));
+        //GOOGLE_MAPS_API_KEYを取得
+        $api_key = env('GOOGLE_MAPS_API_KEY');
+        //Viewに渡す
+        return view("map", compact('spots', 'api_key'));
     }
 
-    //Matrixテスト
-    public function matrix(){
-        return view('matrix');
+    //sample.blade.phpテスト
+    public function sample()
+    {
+        //Spotテーブルを取得
+        $admin = new AdminController();
+        $spots = $admin->get();
+        //GOOGLE_MAPS_API_KEYを取得
+        $api_key = env('GOOGLE_MAPS_API_KEY');
+        //Viewに渡す
+        return view("sample", compact('spots', 'api_key'));
     }
 
 }

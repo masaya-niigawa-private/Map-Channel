@@ -30,4 +30,7 @@ Route::get('/matrix', [MapController::class,'matrix'] );
 //SPAテスト
 Route::get('/spa', [MapController::class,'spa'] );
 
+//まっぷちゃんねる-テスト
+Route::get('/sample', [MapController::class,'sample'] );
+
 

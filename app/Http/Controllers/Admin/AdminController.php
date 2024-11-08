@@ -30,10 +30,9 @@ class AdminController extends Controller
             $spot->spot_name = $request['spot_name'];
             $spot->evaluation = $request['evaluation'];
             $spot->user_name = $request['user_name'];
-            //画像を storage/public/photoに保存し、フルパスを返す
-            $image_path = $request->file('photo')->store('public/photo/');
-            //画像ファイル名のみを$spot変数に入れる
-            $spot->photo_path = basename($image_path);
+            $file = $request->file('photo');
+            $path = $file->store('photo', 's3');
+            $spot->photo_path = $path;
 
             //DBに保存
             $spot->save();
@@ -45,7 +44,6 @@ class AdminController extends Controller
             return back()->with('error', '登録に失敗しました。');
         }
     }
-
 
     //全スポットデータ取得
     public function get()
