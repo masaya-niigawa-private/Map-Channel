@@ -18,7 +18,6 @@ class AdminController extends Controller
             'spot_name' => 'required',
             'evaluation' => 'required'
         ];
-
         // バリデーションチェック
         $request->validate($validationRules);
 
@@ -31,13 +30,13 @@ class AdminController extends Controller
             $spot->evaluation = $request['evaluation'];
             $spot->user_name = $request['user_name'];
             $file = $request->file('photo');
-            $path = $file->store('photo', 's3');
+            if($file){
+                $path = $file->store('photo', 's3');
+            };
             $spot->photo_path = $path;
-
             //DBに保存
             $spot->save();
-
-            // 成功時にリダイレクト
+            // 登録成功時にリダイレクト
             return redirect('/')->with('message', 'スポットが正常に登録されました。');
         } catch (\Exception $e) {
             // 例外発生時にエラーメッセージを表示
@@ -45,7 +44,7 @@ class AdminController extends Controller
         }
     }
 
-    //全スポットデータ取得
+    //spotテーブルから全データ取得
     public function get()
     {
         $all_spots = Spot::all();

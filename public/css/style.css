@@ -1,104 +1,219 @@
-.container.form {
-  background-image: url('../icon/dgradar.jpg');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-size: 190px;
-}
+        /* 背景を黒に設定 */
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #000;
+          /* 背景色を黒に設定 */
+          color: #fff;
+          /* テキストカラーを白に設定 */
+        }
 
-/* .search{
-  display: flex;
-  justify-content: flex-end;
-} */
+        .title {
+          font-size: 2em;
+          color: #00FF00;
+          text-align: center;
+          margin-top: 20px;
+        }
 
-#keiroButton {
-  /* margin-left: 50px;
-  background-color: darkorange;
-  border-radius: 20%; */
-  margin-left: 30px;
-  padding: 5px 10px;
-  font-size: 14px;
-  cursor: pointer;
-  background-color: darkorange;
-  border-radius: 20%;
-  border: none;
-  color: white;
-}
+        /* 横スクロールアニメーション */
+        .welcome-message {
+          color: #00FF00;
+          font-size: 1.2em;
+          overflow: hidden;
+          white-space: nowrap;
+          animation: scroll 20s linear infinite;
+        }
 
-/* ページコントロール用 */
-.page {
-  display: none;
-}
+        @keyframes scroll {
+          0% {
+            transform: translateX(100%);
+          }
 
-.active {
-  display: block;
-}
+          100% {
+            transform: translateX(-100%);
+          }
+        }
 
-.form-container {
-  max-width: 600px;
-  margin: 50px auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+        .search-box {
+          text-align: center;
+          margin: 20px;
+        }
 
-.form-container h3 {
-  margin-bottom: 20px;
-}
+        .map {
+          width: 100%;
+          height: 500px;
+          background-color: #333;
+          /* 地図背景の仮設定 */
+          text-align: center;
+          margin: 20px 0;
+          color: #bbb;
+        }
 
-.col-form-label {
-  text-align: right;
-  color: black;
-  font: weight 200px;
-  ;
-  font-size: medium;
-}
+        .map span {
+          display: inline-block;
+          margin-top: 220px;
+          font-size: 1.5em;
+        }
 
-.form-group {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-}
+        .center-text {
+          text-align: center;
+          margin: 10px;
+        }
 
-.form-label {
-  width: 100px;
-  /* ラベルの固定幅 */
-  margin-right: 10px;
-  text-align: right;
-}
+        .categories {
+          text-align: center;
+          margin-top: 10px;
+        }
 
-.form-control {
-  flex: 1;
-  padding: 5px;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-}
+        .categories a {
+          font-size: 1.1em;
+          color: #00FF00;
+          text-decoration: none;
+          margin: 0 10px;
+        }
 
-.search-container {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  display: flex;
-}
+        .contact-form {
+          text-align: center;
+          margin-top: 20px;
+          color: #00FF00;
+          /* 問い合わせメッセージの色を緑に設定 */
+        }
 
-.search-box {
-  flex: 1;
-  padding: 5px;
-  font-size: 14px;
-}
+        .contact-form textarea {
+          width: 80%;
+          height: 100px;
+          background-color: #222;
+          /* テキストエリアの背景を濃い灰色に */
+          color: #fff;
+          border: 1px solid #555;
+        }
 
-.search-button {
-  padding: 5px 10px;
-  font-size: 14px;
-  cursor: pointer;
-}
+        .contact-form button {
+          padding: 10px 20px;
+          font-size: 1em;
+          background-color: #00FF00;
+          border: none;
+          color: #000;
+          cursor: pointer;
+        }
 
+        /* 登録フォーム */
+        .toroku {
+          width: 90%;
+          max-width: 400px;
+          padding: 20px;
+          background-color: #fff;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          border-radius: 8px;
+          text-align: center;
+          margin: 10% auto;
+        }
 
-.btn-primary{
-  background-color: rgb(52, 216, 52);
-  font-size: 20px;
-  margin: 5px 0;
-}
-.btn-primary:hover{
-  box-shadow: 5px 5px 0;
-}
+        .toroku h2 {
+          background-color: #000;
+          color: #fff;
+          padding: 10px;
+          border-radius: 5px;
+          margin-bottom: 20px;
+        }
+
+        .toroku label {
+          display: block;
+          margin-top: 10px;
+          font-weight: bold;
+          text-align: left;
+        }
+
+        .toroku input[type="text"],
+        .toroku input[type="file"],
+        .toroku select {
+          width: 100%;
+          padding: 8px;
+          margin-top: 5px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+        }
+
+        .toroku-button {
+          width: 100%;
+          padding: 10px;
+          font-size: 1em;
+          background-color: #007bff;
+          color: #fff;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          margin-top: 15px;
+        }
+
+        .toroku-button:hover {
+          background-color: #0056b3;
+        }
+
+        /* ページコントロール用 */
+        .page {
+          display: none;
+        }
+
+        .active {
+          display: block;
+        }
+
+        /* 詳細画面 */
+        dialog.syosai {
+          width: 80%;
+          max-width: 600px;
+          border: none;
+          border-radius: 8px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+          padding: 20px;
+          background-color: #ffffff;
+          position: relative;
+        }
+
+        /* フォームのラベル */
+        .form-label {
+          display: block;
+          font-weight: bold;
+          margin-bottom: 5px;
+          color: #333;
+        }
+
+        /* フォームの入力フィールド */
+        .form-control {
+          width: 100%;
+          padding: 8px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          background-color: #f9f9f9;
+          color: #333;
+          margin: auto
+        }
+
+        /* 各フォームグループ */
+        .form-group {
+          margin-bottom: 15px;
+        }
+
+        /* ダイアログの内側の要素 */
+        dialog.syosai input[disabled] {
+          background-color: #fff;
+          color: #000;
+        }
+
+        /* ×閉じるボタン */
+        .close-button {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          background: none;
+          border: none;
+          font-size: 35px;
+          cursor: pointer;
+        }
+
+        /* 評価★★★★★ */
+        #evaluation {
+          font-size: large;
+          color: #FFD700;
+        }
