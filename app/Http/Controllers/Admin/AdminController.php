@@ -32,15 +32,15 @@ class AdminController extends Controller
             $file = $request->file('photo');
             if($file){
                 $path = $file->store('photo', 's3');
+                $spot->photo_path = $path;
             };
-            $spot->photo_path = $path;
             //DBに保存
             $spot->save();
             // 登録成功時にリダイレクト
-            return redirect('/')->with('message', 'スポットが正常に登録されました。');
+            return redirect('/')->with('message', '正常に登録されました。');
         } catch (\Exception $e) {
             // 例外発生時にエラーメッセージを表示
-            return back()->with('error', '登録に失敗しました。');
+            return back()->with('error', '登録に失敗しました。'.$e->getMessage());
         }
     }
 

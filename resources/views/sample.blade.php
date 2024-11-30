@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <title>MYMAP</title>
 </head>
+
 <body>
     <!-- タイトル -->
     <div class="title">MYMAP</div>
@@ -18,7 +20,27 @@
         <input type="text" id="input" placeholder="検索" name="search">
         <button onclick="search()">検索</button>
     </div>
-    <!-- 地図表示の代替 (仮の場所) -->
+    {{-- バリデーションチェックエラー表示 --}}
+    @if($errors->any())
+    <div eroor_msg>
+        <ul>
+            @foreach ($errors -> all() as $error)
+            <li>{{$error}}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+    {{-- スポット登録 成功/失敗メッセージ表示 --}}
+    @if (session('message'))
+    <div class="alert alert-success">
+        {{ session('message') }}
+    </div>
+    @elseif (session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+    @endif
+    <!-- 地図 -->
     <script>
         var spotData = JSON.parse({!! json_encode($spots) !!});
     </script>
@@ -97,4 +119,5 @@
         </div>
     </dialog>
 </body>
+
 </html>
