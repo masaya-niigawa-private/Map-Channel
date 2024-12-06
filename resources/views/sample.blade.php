@@ -5,15 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <title>MYMAP</title>
+    <title>マップちゃんねる</title>
 </head>
 
 <body>
     <!-- タイトル -->
-    <div class="title">MYMAP</div>
+    <div style="text-align: center;">
+        <img class="tytle-image" src="/icon/マップちゃんねる.jpg" alt="マップちゃんねる" />
+    </div>
     <!-- 説明文（横スクロール） -->
     <div class="welcome-message">
-        ようこそ、MYMAPへ ここでは自分の共有したい位置情報を登録できます。また、知りたい位置情報を知ることもできます。
+        ようこそ、マップちゃんねるへ ここでは自分の共有したい位置情報を登録できます。また、知りたい位置情報を知ることもできます。
     </div>
     <!-- 検索フォーム -->
     <div class="search-box">
@@ -63,11 +65,14 @@
         <a href="https://smokingarea6.wordpress.com/about/">抜き（:18歳未満禁止:）</a>
     </div>
     <!-- 問い合わせフォーム -->
-    <div class="contact-form">
-        <p>MAPの新規ジャンルを増やしてほしいなどの問い合わせはこちらから↓</p>
-        <textarea placeholder="ご意見・ご要望を入力してください"></textarea><br>
-        <button>送信</button>
-    </div>
+    <form action="/opinion" method="post">
+        @csrf
+        <div class="contact-form">
+            <p>MAPの新規ジャンルを増やしてほしいなどの問い合わせはこちらから↓</p>
+            <textarea name="opinion" placeholder="ご意見・ご要望を入力してください"></textarea><br>
+            <button type="submit">送信</button>
+        </div>
+    </form>
     {{-- 登録フォーム-ポップアップ画面 --}}
     <dialog class="toroku">
         <button class="close-button" onclick="document.querySelector('.toroku').close()">×</button>

@@ -20,3 +20,6 @@ Route::get('/', [MapController::class,'showMap'] );
 
 //スポット登録
 Route::post('/form', [AdminController::class,'store'] );
+
+//意見・要望送信
+Route::post('/opinion', [AdminController::class,'opinion_submit'] );

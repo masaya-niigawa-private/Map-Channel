@@ -40,7 +40,7 @@
 
         .map {
           width: 100%;
-          height: 500px;
+          height: 700px;
           background-color: #333;
           /* 地図背景の仮設定 */
           text-align: center;
@@ -48,11 +48,11 @@
           color: #bbb;
         }
 
-        .map span {
+        /* .map span {
           display: inline-block;
           margin-top: 220px;
           font-size: 1.5em;
-        }
+        } */
 
         .center-text {
           text-align: center;
@@ -216,4 +216,18 @@
         #evaluation {
           font-size: large;
           color: #FFD700;
+        }
+        
+        .tytle-image{
+          height: 100px;
+          width: auto;
+        }
+
+        /* スマホ向けのスタイル */
+        @media (max-width: 768px) {
+          .tytle-image {
+            width: 70%;
+            height: auto;
+            /* 画面横幅の70%に設定 */
+          }
         }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Spot;
+use App\Models\Opinion;
 
 class AdminController extends Controller
 {
@@ -30,7 +31,7 @@ class AdminController extends Controller
             $spot->evaluation = $request['evaluation'];
             $spot->user_name = $request['user_name'];
             $file = $request->file('photo');
-            if($file){
+            if ($file) {
                 $path = $file->store('photo', 's3');
                 $spot->photo_path = $path;
             };
@@ -40,7 +41,7 @@ class AdminController extends Controller
             return redirect('/')->with('message', '正常に登録されました。');
         } catch (\Exception $e) {
             // 例外発生時にエラーメッセージを表示
-            return back()->with('error', '登録に失敗しました。'.$e->getMessage());
+            return back()->with('error', '登録に失敗しました。' . $e->getMessage());
         }
     }
 
@@ -51,5 +52,23 @@ class AdminController extends Controller
         $all_spots_json = json_encode($all_spots);
         return $all_spots_json;
     }
-    
+
+    //意見・要望をDBに保存
+    public function opinion_submit(Request $request)
+    {
+        $validationRules = [
+            'opinion' => 'required'
+        ];
+        $request->validate($validationRules);
+        try {
+            $opinion = new Opinion();
+            $opinion->opinion = $request['opinion'];
+            // $opinion->$request['category'];
+            $opinion->save();
+            return redirect('/')->with('message', '送信されました。');
+        } catch (\Exception $e) {
+            // 例外発生時にエラーメッセージを表示
+            return back()->with('error', '送信に失敗しました。' . $e->getMessage());
+        }
+    }
 }
