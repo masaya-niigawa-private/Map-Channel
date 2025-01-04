@@ -201,6 +201,12 @@
           color: #000;
         }
 
+        /* 写真サイズ */
+        .spot-image{
+          width:90%;
+          height: auto;
+        }
+
         /* ×閉じるボタン */
         .close-button {
           position: absolute;
@@ -224,6 +230,7 @@
         }
 
         /* スマホ向けのスタイル */
+        /* タイトル画像サイズ */
         @media (max-width: 768px) {
           .tytle-image {
             width: 70%;

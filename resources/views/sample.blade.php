@@ -1,21 +1,15 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <title>マップちゃんねる</title>
 </head>
-
 <body>
     <!-- タイトル -->
     <div style="text-align: center;">
-        <img class="tytle-image" src="/icon/マップちゃんねる.jpg" alt="マップちゃんねる" />
-    </div>
-    <!-- 説明文（横スクロール） -->
-    <div class="welcome-message">
-        ようこそ、マップちゃんねるへ ここでは自分の共有したい位置情報を登録できます。また、知りたい位置情報を知ることもできます。
+        <img class="tytle-image" src="/icon/マップちゃんねるタイトル.png" alt="マップちゃんねる" />
     </div>
     <!-- 検索フォーム -->
     <div class="search-box">
@@ -105,7 +99,7 @@
         <!-- 詳細表示のポップアップ -->
         <input type="hidden" id="end_ido">
         <input type="hidden" id="end_keido">
-        <img id="spot-image" max-width="40%" height="auto" alt="画像なし" />
+        <img class="spot-image" id="spot-image" max-width="40%" height="auto" alt="画像なし" />
         <div class="form-group">
             <label for="spot_name" class="form-label">場所：</label>
             <input type="text" class="form-control" id="spot_name" disabled>
