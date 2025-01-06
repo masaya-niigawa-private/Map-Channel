@@ -237,4 +237,7 @@
             height: auto;
             /* 画面横幅の70%に設定 */
           }
+          .toroku{
+            width: 70%;
+          }
         }
