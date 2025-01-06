@@ -23,10 +23,10 @@ class AdminController extends Controller
         $request->validate($validationRules);
 
         try {
-            // Spotインスタンスを作成し、リクエストデータを設定
             $spot = new Spot();
             $spot->ido = $request['ido'];
             $spot->keido = $request['keido'];
+            $spot->category = $request['category'];
             $spot->spot_name = $request['spot_name'];
             $spot->evaluation = $request['evaluation'];
             $spot->user_name = $request['user_name'];

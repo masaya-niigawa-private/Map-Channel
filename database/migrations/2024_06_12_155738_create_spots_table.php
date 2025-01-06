@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->String('ido');
             $table->String('keido');
+            $table->String('category')->nullable();//カテゴリー
             $table->String('spot_name');
             $table->String('photo_path')->nullable(); //画像のパス（外部ストレージに保存）
             $table->String('evaluation'); //5段階評価

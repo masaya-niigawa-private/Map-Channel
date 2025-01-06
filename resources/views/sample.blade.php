@@ -75,12 +75,20 @@
             @csrf
             <input type="hidden" id="id_ido" name="ido">
             <input type="hidden" id="id_keido" name="keido">
+            <label for="category">カテゴリー</label>
+            <select name="category">
+                <option value="">選択してください</option>
+                <option value="喫煙スポット">喫煙スポット</option>
+                <option value="イベント">イベント</option>
+                <option value="500円以下ランチ">500円以下ランチ</option>
+                <option value="ぴんく">ぴんく</option>
+            </select>
             <label for="spot_name">場所名（呼び名）:</label>
             <input type="text" class="form-control" name="spot_name" placeholder="場所名を入力してください">
             <label for="photo">写真:</label>
             <input type="file" class="form-control" name="photo">
             <label for="evaluation">評価:</label>
-            <select class="form-select" name="evaluation">
+            <select name="evaluation">
                 <option value="">選択してください</option>
                 <option value="1">⭐</option>
                 <option value="2">⭐⭐</option>
