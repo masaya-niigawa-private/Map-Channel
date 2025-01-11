@@ -71,7 +71,7 @@
     <dialog class="toroku">
         <button class="close-button" onclick="document.querySelector('.toroku').close()">×</button>
         <h2>位置情報を登録</h2>
-        <form action="/form" method="post" enctype="multipart/form-data">
+        <form class="toroku-form" action="/form" method="post" enctype="multipart/form-data">
             @csrf
             <input type="hidden" id="id_ido" name="ido">
             <input type="hidden" id="id_keido" name="keido">

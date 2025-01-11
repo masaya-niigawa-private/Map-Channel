@@ -226,3 +226,34 @@ document.addEventListener('click', (event) => {
     }
   });
 });
+
+//登録フォームバリエーションチェック（2025/01/11）
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.querySelector('.toroku-form');
+  const button = document.querySelector('.toroku-button');
+  button.addEventListener('click', (event) => {
+    event.preventDefault(); // デフォルトのフォーム送信を防止
+    // バリデーション実行
+    if (validateForm()) {
+      form.submit(); // チェックを通過した場合のみフォーム送信
+    }
+  });
+
+  function validateForm() {
+    const errormsg = [];
+    const inputSpot_name = document.querySelector('input[name="spot_name"]');
+    const inputEvaluation = document.querySelector('select[name="evaluation"]');
+    if (inputEvaluation.value === '') {
+      errormsg.push('評価を選択してください')
+    }
+    if (inputSpot_name.value === '') {
+      errormsg.push('場所名（呼び名）を入力してください')
+    }
+    // エラーがあればアラートを表示し、falseを返す
+    if (errormsg.length > 0) {
+      alert(errormsg.join('\n')); // エラーメッセージを改行で区切って表示
+      return false;
+    }
+    return true; // 全てのチェックを通過
+  }
+});
