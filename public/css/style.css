@@ -230,15 +230,13 @@
           width: auto;
         }
 
-        /* スマホ向けのスタイル */
-        /* タイトル画像サイズ */
+        /* スマホ用のスタイル */
         @media (max-width: 768px) {
           .tytle-image {
             width: 70%;
             height: auto;
-            /* 画面横幅の70%に設定 */
           }
-          .toroku{
-            width: 70%;
+          dialog.toroku{
+            width: 75%;
           }
         }
