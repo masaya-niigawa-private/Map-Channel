@@ -97,7 +97,7 @@
         }
 
         /* 登録フォーム */
-        .toroku {
+        dialog.toroku {
           width: 90%;
           max-width: 400px;
           padding: 20px;
@@ -106,6 +106,7 @@
           border-radius: 8px;
           text-align: center;
           margin: 10% auto;
+          position: relative;
         }
 
         .toroku h2 {
