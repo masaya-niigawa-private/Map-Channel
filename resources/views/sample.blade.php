@@ -8,11 +8,9 @@
 </head>
 <body>
     <!-- タイトル -->
-    <div style="text-align: center;">
-        <img class="tytle-image" src="/icon/マップちゃんねるタイトル.png" alt="マップちゃんねる" />
-    </div>
+    <img class="tytle-image" src="/icon/マップちゃんねるタイトル.png" alt="マップちゃんねる" />
     <!-- 検索フォーム -->
-    <div class="search-box">
+    <div class="search-area">
         <input type="text" id="input" placeholder="検索" name="search">
         <button onclick="search()">検索</button>
     </div>

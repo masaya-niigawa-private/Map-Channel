@@ -33,14 +33,36 @@
           }
         }
 
-        .search-box {
+        .search-area {
           text-align: center;
-          margin: 20px;
+          margin: 10px;
+          position: absolute;
+          z-index: 5;
+          text-align: center;
+          top: 120px;
+          left: 50%;
+          transform: translateX(-50%);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 5px;
+        }
+
+        .search-area input {
+          height: 20px;
+        }
+
+        .search-area button {
+          white-space: nowrap;
+        }
+
+        .search-area button:hover {
+          background-color: gray;
         }
 
         .map {
           width: 100%;
-          height: 700px;
+          height: 800px;
           background-color: #333;
           /* 地図背景の仮設定 */
           text-align: center;
@@ -203,8 +225,8 @@
         }
 
         /* 写真サイズ */
-        .spot-image{
-          width:90%;
+        .spot-image {
+          width: 90%;
           height: auto;
         }
 
@@ -224,10 +246,15 @@
           font-size: large;
           color: #FFD700;
         }
-        
-        .tytle-image{
+
+        .tytle-image {
           height: 100px;
           width: auto;
+          z-index: 10;
+          position: absolute;
+          text-align: center;
+          left: 50%;
+          transform: translateX(-50%);
         }
 
         /* スマホ用のスタイル */
@@ -236,10 +263,16 @@
             width: 70%;
             height: auto;
           }
-          dialog.toroku{
+
+          dialog.toroku {
             width: 75%;
           }
-          select{
+
+          select {
             font-size: 12px;
+          }
+
+          .search-area {
+            top: 50px;
           }
         }
