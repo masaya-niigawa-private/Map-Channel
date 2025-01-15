@@ -105,7 +105,9 @@
         <!-- 詳細表示のポップアップ -->
         <input type="hidden" id="end_ido">
         <input type="hidden" id="end_keido">
-        <img class="spot-image" id="spot-image" max-width="40%" height="auto" alt="画像なし" />
+        <div class = "spot-image-container">
+            <img class="spot-image" id="spot-image" max-width="40%" height="auto" alt="画像なし" />
+        </div>
         <div class="form-group">
             <label for="spot_name" class="form-label">場所：</label>
             <input type="text" class="form-control" id="spot_name" disabled>

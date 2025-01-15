@@ -194,6 +194,11 @@
           position: relative;
         }
 
+        .spot-image-container {
+          display: flex;
+          justify-content: center;
+        }
+
         /* フォームのラベル */
         .form-label {
           display: block;
@@ -274,5 +279,9 @@
 
           .search-area {
             top: 50px;
+          }
+
+          dialog.syosai {
+            width: 75%
           }
         }
