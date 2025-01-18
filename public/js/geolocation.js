@@ -28,7 +28,10 @@ function onGetPositionSuccess(position) {
     zoom: 13,
     center: latlng,
     mapTypeControl: false,//「地図」「航空写真」を非表示
-    fullscreenControl: false//「フルスクリーン」ボタン無効化
+    fullscreenControl: false,//「フルスクリーン」ボタン無効化
+    streetViewControl: false,
+    zoomControl: false,
+    //gestureHandling: "greedy" // 1本指で地図を移動可能に設定
   });
   //レンダラーにマップセット
   //directionsRenderer.setMap(map);
