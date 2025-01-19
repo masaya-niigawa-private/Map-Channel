@@ -138,6 +138,20 @@
           margin-bottom: 20px;
         }
 
+        .form-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          /* 2列構成 */
+          gap: 16px;
+          /* 項目間のスペース */
+          align-items: center;
+        }
+
+        .form-grid div {
+          display: flex;
+          flex-direction: column;
+        }
+
         .toroku label {
           display: block;
           margin-top: 10px;
@@ -282,5 +296,11 @@
 
           dialog.syosai {
             width: 75%
+          }
+
+          .form-grid {
+            grid-template-columns: 1fr;
+            /* 1列構成に変更 */
+            gap: 8px;
           }
         }

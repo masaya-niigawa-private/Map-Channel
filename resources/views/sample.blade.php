@@ -73,30 +73,42 @@
             @csrf
             <input type="hidden" id="id_ido" name="ido">
             <input type="hidden" id="id_keido" name="keido">
-            <label for="category">カテゴリー</label>
-            <select name="category">
-                <option value="">選択してください</option>
-                <option value="喫煙スポット">喫煙スポット</option>
-                <option value="イベント">イベント</option>
-                <option value="500円以下ランチ">500円以下ランチ</option>
-                <option value="ぴんく">ぴんく</option>
-            </select>
-            <label for="spot_name">場所名（呼び名）:</label>
-            <input type="text" class="form-control" name="spot_name" placeholder="場所名を入力してください">
-            <label for="photo">写真:</label>
-            <input type="file" class="form-control" name="photo">
-            <label for="evaluation">評価:</label>
-            <select name="evaluation">
-                <option value="">選択してください</option>
-                <option value="1">⭐</option>
-                <option value="2">⭐⭐</option>
-                <option value="3">⭐⭐⭐</option>
-                <option value="4">⭐⭐⭐⭐</option>
-                <option value="5">⭐⭐⭐⭐⭐</option>
-            </select>
-            <label for="user_name">登録ユーザー:</label>
-            <input type="text" class="form-control" name="user_name" placeholder="ニックネームを入力してください">
-            <button type="submit" class="toroku-button">登録</button>
+            <div class="form-grid">
+                <div>
+                    <label for="category">カテゴリー</label>
+                    <select name="category">
+                        <option value="">選択してください</option>
+                        <option value="喫煙スポット">喫煙スポット</option>
+                        <option value="イベント">イベント</option>
+                        <option value="500円以下ランチ">500円以下ランチ</option>
+                        <option value="ぴんく">ぴんく</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="spot_name">場所名（呼び名）:</label>
+                    <input type="text" class="form-control" name="spot_name" placeholder="場所名を入力してください">
+                </div>
+                <div>
+                    <label for="photo">写真:</label>                    
+                    <input type="file" class="form-control" name="photo">
+                </div>
+                <div>
+                    <label for="evaluation">評価:</label>
+                    <select name="evaluation">
+                        <option value="">選択してください</option>
+                        <option value="1">⭐</option>
+                        <option value="2">⭐⭐</option>
+                        <option value="3">⭐⭐⭐</option>
+                        <option value="4">⭐⭐⭐⭐</option>
+                        <option value="5">⭐⭐⭐⭐⭐</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="user_name">登録ユーザー:</label>
+                    <input type="text" class="form-control" name="user_name" placeholder="ニックネームを入力してください">
+                </div>
+                <button type="submit" class="toroku-button">登録</button>
+            </div>
         </form>
     </dialog>
     {{-- スポット詳細-ポップアップ画面 --}}
