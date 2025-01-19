@@ -252,8 +252,8 @@
         }
 
         .tytle-image {
-          height: 100px;
-          width: auto;
+          width: 29%;
+          height: auto;
           z-index: 10;
           position: absolute;
           text-align: center;
