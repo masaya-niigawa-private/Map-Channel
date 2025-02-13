@@ -77,13 +77,14 @@ function addExistingMarkers(map) {
       document.getElementById('user_name').value = (spotData[i].user_name);
       document.getElementById('createc_at').value = (spotData[i].created_at).split('T')[0];
       const photo_path = spotData[i].photo_path;
+      const image = document.getElementById('spot-image');
       if (photo_path) {
         const timestamp = Date.now();
-        const image = document.getElementById('spot-image');
         image.src = "";
         image.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photo_path + "?v=" + timestamp;
       } else {
-        document.getElementById('spot-image').onerror = function () {
+        image.src = "";
+        image.onerror = function () {
           this.classList.add('hidden');
         };
       }
