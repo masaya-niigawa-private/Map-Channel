@@ -7,9 +7,7 @@
     <title>マップちゃんねる</title>
 </head>
 <body>
-    <!-- タイトル -->
     <img class="tytle-image" src="/icon/マップちゃんねるタイトル.png" alt="マップちゃんねる" />
-    <!-- 検索フォーム -->
     <div class="search-area">
         <input type="text" id="input" placeholder="検索" name="search">
         <button onclick="search()">検索</button>
@@ -78,6 +76,7 @@
                     <label for="category">カテゴリー</label>
                     <select name="category">
                         <option value="">選択してください</option>
+                        <option value="関大">関大</option>
                         <option value="喫煙スポット">喫煙スポット</option>
                         <option value="イベント">イベント</option>
                         <option value="500円以下ランチ">500円以下ランチ</option>
