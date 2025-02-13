@@ -79,9 +79,11 @@ function addExistingMarkers(map) {
       const photo_path = spotData[i].photo_path;
       if (photo_path) {
         const timestamp = Date.now();
-        document.getElementById('spot-image').src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photo_path + "?v=" + timestamp;
+        const image = document.getElementById('spot-image');
+        image.src = "";
+        image.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photo_path + "?v=" + timestamp;
       } else {
-        document.getElementById('spot-image').onerror = function () {
+        image.onerror = function () {
           this.classList.add('hidden');
         };
       }
