@@ -83,7 +83,7 @@ function addExistingMarkers(map) {
         image.src = "";
         image.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photo_path + "?v=" + timestamp;
       } else {
-        image.onerror = function () {
+        document.getElementById('spot-image').onerror = function () {
           this.classList.add('hidden');
         };
       }
