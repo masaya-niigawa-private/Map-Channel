@@ -27,6 +27,7 @@ function onGetPositionSuccess(position) {
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 13,
     center: latlng,
+    gestureHandling: "greedy",//指1本操作
     mapTypeControl: false,//「地図」「航空写真」を非表示
     fullscreenControl: false,//「フルスクリーン」ボタン無効化
     streetViewControl: false,
