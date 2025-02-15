@@ -32,7 +32,13 @@ function onGetPositionSuccess(position) {
     fullscreenControl: false,//「フルスクリーン」ボタン無効化
     streetViewControl: false,
     zoomControl: false,
-    //gestureHandling: "greedy" // 1本指で地図を移動可能に設定
+    styles: [
+      {
+          featureType: "poi.business",//商業施設を非表示
+          elementType: "labels",
+          stylers: [{ visibility: "off" }]
+      }
+    ]
   });
   //レンダラーにマップセット
   //directionsRenderer.setMap(map);
