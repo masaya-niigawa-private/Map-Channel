@@ -7,11 +7,13 @@
     <title>マップちゃんねる</title>
 </head>
 <body>
+<div class="container">
     <img class="tytle-image" src="/icon/マップちゃんねるタイトル.png" alt="マップちゃんねる" />
     <div class="search-area">
         <input type="text" id="input" placeholder="検索" name="search">
         <button onclick="search()">検索</button>
     </div>
+</div>
     {{-- バリデーションチェックエラー表示 --}}
     @if($errors->any())
     <div eroor_msg>
@@ -63,57 +65,66 @@
             <button type="submit">送信</button>
         </div>
     </form>
-    {{-- 登録フォーム-ポップアップ画面 --}}
+
+    <!-- 登録フォーム画面 -->
     <dialog class="toroku">
         <button class="close-button" onclick="document.querySelector('.toroku').close()">×</button>
         <h2>位置情報を登録</h2>
-        <form class="toroku-form" action="/form" method="post" enctype="multipart/form-data">
-            @csrf
-            <input type="hidden" id="id_ido" name="ido">
-            <input type="hidden" id="id_keido" name="keido">
-            <div class="form-grid">
-                <div>
-                    <label for="category">カテゴリー</label>
-                    <select name="category">
-                        <option value="">選択してください</option>
-                        <option value="関大">関大</option>
-                        <option value="喫煙スポット">喫煙スポット</option>
-                        <option value="イベント">イベント</option>
-                        <option value="500円以下ランチ">500円以下ランチ</option>
-                        <option value="ぴんく">ぴんく</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="spot_name">場所名（呼び名）:</label>
-                    <input type="text" class="form-control" name="spot_name" placeholder="場所名を入力してください">
-                </div>
-                <div>
-                    <label for="photo">写真:</label>                    
-                    <input type="file" class="form-control" name="photo">
-                </div>
-                <div>
-                    <label for="evaluation">評価:</label>
-                    <select name="evaluation">
-                        <option value="">選択してください</option>
-                        <option value="1">⭐</option>
-                        <option value="2">⭐⭐</option>
-                        <option value="3">⭐⭐⭐</option>
-                        <option value="4">⭐⭐⭐⭐</option>
-                        <option value="5">⭐⭐⭐⭐⭐</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="user_name">登録ユーザー:</label>
-                    <input type="text" class="form-control" name="user_name" placeholder="ニックネームを入力してください">
-                </div>
-                <button type="submit" class="toroku-button">登録</button>
+    <form class="toroku-form" action="/form" method="post" enctype="multipart/form-data">
+        @csrf
+        <input type="hidden" id="id_ido" name="ido">
+        <input type="hidden" id="id_keido" name="keido">
+    
+        <!-- ページ 1 -->
+        <div id="page1">
+            <div>
+                <label for="category">カテゴリー</label>
+                <select name="category">
+                    <option value="">選択してください</option>
+                    <option value="関大">関大</option>
+                    <option value="喫煙スポット">喫煙スポット</option>
+                    <option value="イベント">イベント</option>
+                    <option value="500円以下ランチ">500円以下ランチ</option>
+                    <option value="ぴんく">ぴんく</option>
+                </select>
             </div>
-        </form>
+            <div>
+                <label for="spot_name">場所名（呼び名）:</label>
+                <input type="text" class="form-control" name="spot_name" placeholder="場所名を入力してください">
+            </div>
+            <div>
+                <label for="evaluation">評価:</label>
+                <select name="evaluation">
+                    <option value="">選択してください</option>
+                    <option value="1">⭐</option>
+                    <option value="2">⭐⭐</option>
+                    <option value="3">⭐⭐⭐</option>
+                    <option value="4">⭐⭐⭐⭐</option>
+                    <option value="5">⭐⭐⭐⭐⭐</option>
+                </select>
+            </div>
+            <button type="button" onclick="nextPage()">次へ</button>
+        </div>
+
+        <!-- ページ 2 -->
+        <div id="page2" style="display: none;">
+            <div>
+                <label for="photo">写真:</label>
+                <input type="file" class="form-control" name="photo">
+            </div>
+            <div>
+                <label for="user_name">登録ユーザー:</label>
+                <input type="text" class="form-control" name="user_name" placeholder="ニックネームを入力してください">
+            </div>
+            <button type="button" onclick="prevPage()">戻る</button>
+            <button type="submit" class="toroku-button">登録</button>
+        </div>
+    </form>
     </dialog>
-    {{-- スポット詳細-ポップアップ画面 --}}
+    
+    <!-- スポット詳細画面 -->
     <dialog class="syosai">
         <button class="close-button" onclick="document.querySelector('.syosai').close()">×</button>
-        <!-- 詳細表示のポップアップ -->
         <input type="hidden" id="end_ido">
         <input type="hidden" id="end_keido">
         <div class = "spot-image-container">
@@ -132,7 +143,7 @@
             <input type="text" class="form-control" id="user_name" disabled>
         </div>
         <div class="form-group">
-            <label for="createc_at" class="form-label">登録日時：</label>
+            <label for="createc_at" class="form-label">登録日：</label>
             <input type="text" class="form-control" id="createc_at" disabled>
         </div>
     </dialog>
