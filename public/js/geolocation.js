@@ -280,3 +280,14 @@ document.addEventListener('DOMContentLoaded', () => {
     return true; // 全てのチェックを通過
   }
 });
+
+//登録フォームページ移動
+function nextPage() {
+  document.getElementById('page1').style.display = 'none';
+  document.getElementById('page2').style.display = 'block';
+}
+
+function prevPage() {
+  document.getElementById('page2').style.display = 'none';
+  document.getElementById('page1').style.display = 'block';
+}
