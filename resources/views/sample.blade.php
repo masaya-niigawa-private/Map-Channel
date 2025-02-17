@@ -86,6 +86,7 @@
                     <option value="イベント">イベント</option>
                     <option value="500円以下ランチ">500円以下ランチ</option>
                     <option value="ぴんく">ぴんく</option>
+                    <option value="キッチンカー">キッチンカー</option>
                 </select>
             </div>
             <div>
