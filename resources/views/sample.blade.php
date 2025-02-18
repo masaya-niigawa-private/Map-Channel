@@ -91,7 +91,7 @@
             </div>
             <div>
                 <label for="spot_name">場所名（呼び名）:</label>
-                <input type="text" class="form-control" name="spot_name" placeholder="場所名を入力してください">
+                <input type="text" class="toroku-form-control" name="spot_name" placeholder="場所名を入力してください">
             </div>
             <div>
                 <label for="evaluation">評価:</label>
@@ -111,11 +111,11 @@
         <div id="page2" style="display: none;">
             <div>
                 <label for="photo">写真:</label>
-                <input type="file" class="form-control" name="photo">
+                <input type="file" class="toroku-form-control" name="photo">
             </div>
             <div>
                 <label for="user_name">登録ユーザー:</label>
-                <input type="text" class="form-control" name="user_name" placeholder="ニックネームを入力してください">
+                <input type="text" class="toroku-form-control" name="user_name" placeholder="ニックネームを入力してください">
             </div>
             <button type="button" onclick="prevPage()">戻る</button>
             <button type="submit" class="toroku-button">登録</button>
@@ -123,31 +123,44 @@
     </form>
     </dialog>
     
-    <!-- スポット詳細画面 -->
+    <!-- スポット詳細ポップアップ -->
     <dialog class="syosai">
         <button class="close-button" onclick="document.querySelector('.syosai').close()">×</button>
-        <input type="hidden" id="end_ido">
-        <input type="hidden" id="end_keido">
-        <div class = "spot-image-container">
-            <img class="spot-image" id="spot-image" max-width="40%" height="auto" alt="画像なし" />
+        <!-- <input type="hidden" id="end_ido"> -->
+        <!-- <input type="hidden" id="end_keido"> -->
+        <div class = "spot-image-container-syosai">
+            <img class="spot-image-syosai" id="spot-image1" max-width="40%" height="auto" alt="画像なし" />
         </div>
-        <div class="form-group">
-            <label for="spot_name" class="form-label">場所：</label>
-            <input type="text" class="form-control" id="spot_name" disabled>
-        </div>
-        <div class="form-group">
-            <label for="evaluation" class="form-label">評価：</label>
-            <input type="text" class="form-control" id="evaluation" disabled>
-        </div>
-        <div class="form-group">
-            <label for="user_name" class="form-label">登録者：</label>
-            <input type="text" class="form-control" id="user_name" disabled>
-        </div>
-        <div class="form-group">
-            <label for="createc_at" class="form-label">登録日：</label>
-            <input type="text" class="form-control" id="createc_at" disabled>
+        <div class="syosai-popup-group">
+            <label for="spot_name" class="syosai-popup-label">場所：</label>
+            <input type="text" class="syosai-popup-control" id="spot_name1" disabled>
         </div>
     </dialog>
+
+    <!-- スポット詳細（画面下部） -->
+    <div class="detail-container">
+        <div class = "spot-image-container">
+            <img class="spot-image" id="spot-image2" max-width="40%" height="auto" alt="画像なし" />
+        </div>
+        <div class = "info-container">
+            <div class="form-group">
+                <label for="spot_name" class="syosai-form-label">場所</label>
+                <input type="text" class="syosai-form-control" id="spot_name2" disabled>
+            </div>
+            <div class="form-group">
+                <label for="evaluation" class="syosai-form-label">評価</label>
+                <input type="text" class="syosai-form-control" id="evaluation" disabled>
+            </div>
+            <div class="form-group">
+                <label for="user_name" class="syosai-form-label">登録者</label>
+                <input type="text" class="syosai-form-control" id="user_name" disabled>
+            </div>
+            <div class="form-group">
+                <label for="createc_at" class="syosai-form-label">登録日</label>
+                <input type="text" class="syosai-form-control" id="createc_at" disabled>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
