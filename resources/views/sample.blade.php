@@ -126,14 +126,16 @@
     <!-- スポット詳細ポップアップ -->
     <dialog class="syosai">
         <button class="close-button" onclick="document.querySelector('.syosai').close()">×</button>
-        <!-- <input type="hidden" id="end_ido"> -->
-        <!-- <input type="hidden" id="end_keido"> -->
-        <div class = "spot-image-container-syosai">
-            <img class="spot-image-syosai" id="spot-image1" max-width="40%" height="auto" alt="画像なし" />
-        </div>
-        <div class="syosai-popup-group">
-            <label for="spot_name" class="syosai-popup-label">場所：</label>
-            <input type="text" class="syosai-popup-control" id="spot_name1" disabled>
+        <div class="syosai-popup-content">
+            <!-- <input type="hidden" id="end_ido"> -->
+            <!-- <input type="hidden" id="end_keido"> -->
+            <div class = "spot-image-popup-container">
+                <img class="spot-image-popup" id="spot-image1" max-width="40%" height="auto" alt="画像なし" />
+            </div>
+            <div class="syosai-popup-group">
+                <label for="spot_name" class="syosai-popup-label">場所：</label>
+                <input type="text" class="syosai-popup-control" id="spot_name1" disabled>
+            </div>
         </div>
     </dialog>
 
