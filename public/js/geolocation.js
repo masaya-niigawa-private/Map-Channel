@@ -79,25 +79,26 @@ function addExistingMarkers(map) {
       //経路表示用の'end_ido' 'end_keido'
       // document.getElementById('end_ido').value = parseFloat(spotData[i].ido);
       // document.getElementById('end_keido').value = parseFloat(spotData[i].keido);
-      document.getElementById('spot_name').value = (spotData[i].spot_name);
+      document.getElementById('spot_name1').value = (spotData[i].spot_name);
+      document.getElementById('spot_name2').value = (spotData[i].spot_name);
       document.getElementById('evaluation').value = '★'.repeat((spotData[i].evaluation));
       document.getElementById('user_name').value = (spotData[i].user_name);
-      document.getElementById('createc_at').value = (spotData[i].created_at).split('T')[0];
-      const photo_path = spotData[i].photo_path;
-      const image = document.getElementById('spot-image');
-      if (photo_path) {
-        const timestamp = Date.now();
-        image.src = "";
-        image.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photo_path + "?v=" + timestamp;
-      } else {
-        image.src = "";
-        image.onerror = function () {
-          this.classList.add('hidden');
-        };
-      }
-      //navigate('syosai');
+      document.getElementById('createc_at').value = spotData[i].created_at.split('T')[0].replace(/-/g, '/');
 
-      //詳細画面表示（11/14追加）
+      const photo_path = spotData[i].photo_path;
+      const image1 = document.getElementById('spot-image1');
+      const image2 = document.getElementById('spot-image2');
+      if (photo_path) {
+        image1.src = "";
+        image2.src = "";
+        image1.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photo_path;
+        image2.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photo_path;
+      } else {
+        image1.src = "";
+        image2.src = "";
+      }
+
+      //詳細ポップアップ画面表示（11/14追加）
       const syosai = document.querySelector('.syosai');
       syosai.showModal();
 
