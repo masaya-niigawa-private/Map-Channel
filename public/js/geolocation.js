@@ -34,9 +34,9 @@ function onGetPositionSuccess(position) {
     zoomControl: false,
     styles: [
       {
-          featureType: "poi.business",//商業施設を非表示
-          elementType: "labels",
-          stylers: [{ visibility: "off" }]
+        featureType: "poi.business",//商業施設を非表示
+        elementType: "labels",
+        stylers: [{ visibility: "off" }]
       }
     ]
   });
@@ -292,3 +292,44 @@ function prevPage() {
   document.getElementById('page2').style.display = 'none';
   document.getElementById('page1').style.display = 'block';
 }
+
+// ポップアップを開く
+function openPopup() {
+  document.querySelector(".loginPopup").showModal();
+}
+
+// ポップアップを閉じる
+function closePopup() {
+  document.querySelector(".loginPopup").close();
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  document.getElementById('loginForm').addEventListener('submit', function (event) {
+    event.preventDefault(); // デフォルトのフォーム送信を防ぐ
+
+    let formData = new FormData(this);
+
+    fetch("/login", {
+      method: "POST",
+      body: formData,
+      headers: {
+        "X-CSRF-TOKEN": document.querySelector('input[name=_token]').value
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          closePopup();
+          alert("ログイン成功！");
+          // ユーザー情報を表示
+          document.getElementById("login_user_name").value = data.user_name;
+          document.getElementById("login_user_name").style.display = 'block';
+          // ログインボタンを非表示
+          document.querySelector(".loginButton").style.display = "none";
+        } else {
+          alert("ログインに失敗しました");
+        }
+      })
+      .catch(error => console.error('Error:', error));
+  });
+});

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
@@ -69,7 +70,7 @@
     <!-- 登録フォーム画面 -->
     <dialog class="toroku">
         <button class="close-button" onclick="document.querySelector('.toroku').close()">×</button>
-        <h2>位置情報を登録</h2>
+        <div class="toroku-tytle">まっぷ登録</div>
     <form class="toroku-form" action="/form" method="post" enctype="multipart/form-data">
         @csrf
         <input type="hidden" id="id_ido" name="ido">
@@ -90,11 +91,11 @@
                 </select>
             </div>
             <div>
-                <label for="spot_name">場所名（呼び名）:</label>
+                <label for="spot_name">名前</label>
                 <input type="text" class="toroku-form-control" name="spot_name" placeholder="場所名を入力してください">
             </div>
             <div>
-                <label for="evaluation">評価:</label>
+                <label for="evaluation">評価</label>
                 <select name="evaluation">
                     <option value="">選択してください</option>
                     <option value="1">⭐</option>
@@ -104,23 +105,42 @@
                     <option value="5">⭐⭐⭐⭐⭐</option>
                 </select>
             </div>
-            <button type="button" onclick="nextPage()">次へ</button>
+            <button class="pageButton" type="button" onclick="nextPage()">次ページ</button>
         </div>
 
         <!-- ページ 2 -->
         <div id="page2" style="display: none;">
             <div>
-                <label for="photo">写真:</label>
+                <label for="photo">画像</label>
                 <input type="file" class="toroku-form-control" name="photo">
             </div>
-            <div>
-                <label for="user_name">登録ユーザー:</label>
-                <input type="text" class="toroku-form-control" name="user_name" placeholder="ニックネームを入力してください">
+            <div class="user-container">
+                <label for="login_user_name" style="margin-top:initial">登録者</label>
+                <input readonly id="login_user_name" class="toroku-form-control" type="text" style="display:none">
+                <button class="loginButton" type="button" onclick="openPopup()">ログイン</button>
             </div>
-            <button type="button" onclick="prevPage()">戻る</button>
+            <button class="pageButton" type="button" onclick="prevPage()">前ページ</button>
             <button type="submit" class="toroku-button">登録</button>
         </div>
     </form>
+    </dialog>
+
+    <!-- ログインポップアップウィンドウ -->
+    <dialog class="loginPopup">
+        <div class="popup-content" style="color:black">
+            <span class="close-btn" onclick="closePopup()">×</span>
+            <h2>ログイン</h2>
+            <form id="loginForm" action="{{ route('login') }}" method="POST">
+                @csrf
+                <label for="name">ユーザー名:</label>
+                <input name="name" required>
+                <br>
+                <label for="password">パスワード:</label>
+                <input type="password" name="password" required>
+                <br>
+                <button type="submit">ログイン</button>
+            </form>
+        </div>
     </dialog>
     
     <!-- スポット詳細ポップアップ -->

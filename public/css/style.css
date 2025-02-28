@@ -1,342 +1,403 @@
-        /* 背景を黒に設定 */
-        body {
-          margin: 0;
-          font-family: Arial, sans-serif;
-          background-color: #000;
-          /* 背景色を黒に設定 */
-          color: #fff;
-          /* テキストカラーを白に設定 */
-        }
+/* 背景を黒に設定 */
+body {
+  font-family: "Zen Maru Gothic", sans-serif;
+  margin: 0;
+  background-color: #000;
+  /* 背景色を黒に設定 */
+  color: #fff;
+  /* テキストカラーを白に設定 */
+}
 
-        .map {
-          width: 100vw;
-          height: 100vh;
-          position: relative;
-        }
+.map {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
 
-        .container {
-          display: flex;
-          align-items: center;
-          position: absolute;
-          /* マップの上に固定 */
-          top: 10px;
-          left: 50%;
-          transform: translateX(-50%);
-          /* 中央配置 */
-          width: 90%;
-          max-width: 1200px;
-          z-index: 10;
-          padding: 10px;
-          flex-direction: column;
-        }
+.container {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  /* マップの上に固定 */
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  /* 中央配置 */
+  width: 90%;
+  max-width: 1200px;
+  z-index: 10;
+  padding: 10px;
+  flex-direction: column;
+}
 
-        .tytle-image {
-          width: 30vw;
-          height: auto;
-          position: absolute;
-          left: 50%;
-          transform: translateX(-50%);
-        }
+.tytle-image {
+  width: 30vw;
+  height: auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
 
-        .search-area {
-          margin-left: auto;
-          display: flex;
-          align-items: center;
-          gap: 5px;
-          padding-top: 10px;
-        }
+.search-area {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding-top: 10px;
+}
 
-        .search-area input {
-          height: 20px;
-        }
+.search-area input {
+  height: 20px;
+}
 
-        .search-area button {
-          white-space: nowrap;
-        }
+.search-area button {
+  white-space: nowrap;
+}
 
-        .search-area button:hover {
-          background-color: gray;
-        }
+.search-area button:hover {
+  background-color: gray;
+}
 
-        /* .map span {
+/* .map span {
           display: inline-block;
           margin-top: 220px;
           font-size: 1.5em;
         } */
 
-        .center-text {
-          text-align: center;
-          margin: 10px;
-        }
+.center-text {
+  text-align: center;
+  margin: 10px;
+}
 
-        .categories {
-          text-align: center;
-          margin-top: 10px;
-        }
+.categories {
+  text-align: center;
+  margin-top: 10px;
+}
 
-        .categories a {
-          font-size: 1.1em;
-          color: #00FF00;
-          text-decoration: none;
-          margin: 0 10px;
-        }
+.categories a {
+  font-size: 1.1em;
+  color: #00FF00;
+  text-decoration: none;
+  margin: 0 10px;
+}
 
-        .contact-form {
-          text-align: center;
-          margin-top: 20px;
-          color: #00FF00;
-          /* 問い合わせメッセージの色を緑に設定 */
-        }
+.contact-form {
+  text-align: center;
+  margin-top: 20px;
+  color: #00FF00;
+  /* 問い合わせメッセージの色を緑に設定 */
+}
 
-        .contact-form textarea {
-          width: 80%;
-          height: 100px;
-          background-color: #222;
-          /* テキストエリアの背景を濃い灰色に */
-          color: #fff;
-          border: 1px solid #555;
-        }
+.contact-form textarea {
+  width: 80%;
+  height: 100px;
+  background-color: #222;
+  /* テキストエリアの背景を濃い灰色に */
+  color: #fff;
+  border: 1px solid #555;
+}
 
-        .contact-form button {
-          padding: 10px 20px;
-          font-size: 1em;
-          background-color: #00FF00;
-          border: none;
-          color: #000;
-          cursor: pointer;
-        }
+.contact-form button {
+  padding: 10px 20px;
+  font-size: 1em;
+  background-color: #00FF00;
+  border: none;
+  color: #000;
+  cursor: pointer;
+}
 
-        /* 登録フォーム */
-        dialog.toroku {
-          width: 90%;
-          max-width: 400px;
-          padding: 20px;
-          background-color: #fff;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-          border-radius: 8px;
-          text-align: center;
-          margin: 10% auto;
-          position: relative;
-        }
+/* 登録フォーム */
+dialog.toroku {
+  border: none;
+  width: 90%;
+  max-width: 400px;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  text-align: center;
+  margin: 10% auto;
+  position: fixed;
+  z-index: 10;
+}
 
-        .toroku h2 {
-          background-color: #000;
-          color: #fff;
-          padding: 10px;
-          border-radius: 5px;
-          margin-bottom: 20px;
-        }
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.3);
+}
 
-        /* フォームの入力フィールド */
-        .toroku-form-control {
-          width: 100%;
-          padding: 8px;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          background-color: #f9f9f9;
-          color: #333;
-          margin: auto
-        }
+.toroku-tytle {
+  font-size: 30px;
+  font-weight: bold;
+  color: #00ff00;
+}
 
-        .toroku label {
-          display: block;
-          margin-top: 10px;
-          font-weight: bold;
-          text-align: left;
-        }
+/* フォームの入力フィールド */
+.toroku-form-control {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  color: #333;
+  margin: auto
+}
 
-        .toroku input[type="text"],
-        .toroku input[type="file"],
-        .toroku select {
-          width: 100%;
-          padding: 8px;
-          margin-top: 5px;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          box-sizing: border-box;
-        }
+.toroku label {
+  display: block;
+  margin-top: 20px;
+  font-weight: bold;
+  text-align: left;
+}
 
-        .toroku-button {
-          width: 100%;
-          padding: 10px;
-          font-size: 1em;
-          background-color: #007bff;
-          color: #fff;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-          margin-top: 15px;
-        }
+.toroku input[type="text"],
+.toroku input[type="file"],
+.toroku select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
 
-        .toroku-button:hover {
-          background-color: #0056b3;
-        }
+.toroku select {
+  font-size: 14px;
+}
 
-        /* ページコントロール用 */
-        .page {
-          display: none;
-        }
+.toroku-button {
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+  background-color: #00ff44;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 15px;
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2);
+  /* 立体感 */
+}
 
-        .active {
-          display: block;
-        }
+.toroku-button:hover {
+  background-color: #00ff4499;
+}
 
-        /* 詳細ポップアップ画面 */
-        dialog.syosai {
-          width: auto;
-          max-width: 400px;
-          /* 幅を調整 */
-          border: none;
-          border-radius: 8px;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-          padding: 20px;
-          background-color: #ffffff;
-          position: relative;
-          text-align: center;
-          /* 全体を中央寄せ */
-        }
+.pageButton {
+  margin-top: 25px;
+}
 
-        /* ×閉じるボタン */
-        .close-button {
-          position: absolute;
-          top: 10px;
-          right: 10px;
-          background: none;
-          border: none;
-          font-size: 35px;
-          cursor: pointer;
-        }
+/* 詳細ポップアップ画面 */
+dialog.syosai {
+  width: auto;
+  max-width: 400px;
+  /* 幅を調整 */
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  padding: 20px;
+  background-color: #ffffff;
+  position: relative;
+  text-align: center;
+  /* 全体を中央寄せ */
+}
 
-        /* 画像と入力欄を縦並びにする */
-        .syosai-popup-content {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
+/* ×閉じるボタン */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 35px;
+  cursor: pointer;
+}
 
-        /* 画像コンテナ */
-        .spot-image-popup-container {
-          max-width: 100%;
-          text-align: center;
-        }
+/* 画像と入力欄を縦並びにする */
+.syosai-popup-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-        .spot-image-popup {
-          width: 100%;
-          height: auto;
-          border-radius: 10px;
-        }
+/* 画像コンテナ */
+.spot-image-popup-container {
+  max-width: 100%;
+  text-align: center;
+}
 
-        /* ラベルと入力欄 */
-        .syosai-popup-group {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          width: 100%;
-          border-bottom: 1px solid #ddd;
-          padding-bottom: 5px;
-          margin-top: 10px;
-          /* 画像との間隔 */
-        }
+.spot-image-popup {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
 
-        .syosai-popup-label {
-          font-weight: bold;
-          min-width: 80px;
-          color: #333;
-        }
+/* ラベルと入力欄 */
+.syosai-popup-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+  margin-top: 10px;
+  /* 画像との間隔 */
+}
 
-        .syosai-popup-control {
-          flex: 1;
-          padding: 8px;
-          border: none;
-          border-radius: 5px;
-          background-color: #f5f5f5;
-          text-align: right;
-        }
+.syosai-popup-label {
+  font-weight: bold;
+  min-width: 80px;
+  color: #333;
+}
 
-        /* スポット詳細（画面下部） */
-        .detail-container {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 20px;
-          border: 1px solid #000;
-        }
+.syosai-popup-control {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  background-color: #f5f5f5;
+  text-align: right;
+}
 
-        .spot-image-container {
-          flex: 1;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          padding: 10px;
-        }
+/* スポット詳細（画面下部） */
+.detail-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  border: 1px solid #000;
+}
 
-        .spot-image {
-          max-width: 100%;
-          height: auto;
-          border-radius: 20px;
-        }
+.spot-image-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
 
-        .info-container {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-          margin-left: 20px;
-        }
+.spot-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 20px;
+}
 
-        .form-group {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          background-color: white;
-          padding: 15px;
-          border-radius: 10px;
-          box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-        }
+.info-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-left: 20px;
+}
 
-        .syosai-form-label {
-          min-width: 80px;
-          color: #333;
-          text-align: center;
-        }
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
 
-        .syosai-form-control {
-          text-align: center;
-        }
+.syosai-form-label {
+  min-width: 80px;
+  color: #333;
+  text-align: center;
+}
 
-        /* スマホ用のスタイル */
-        @media (max-width: 768px) {
-          .tytle-image {
-            width: 70vw;
-            height: auto;
-          }
+.syosai-form-control {
+  text-align: center;
+}
 
-          .search-area {
-            margin-top: 15px;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-          }
+/* ポップアップ背景のオーバーレイ */
+.loginPopup {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
 
-          dialog.toroku {
-            width: 75%;
-          }
+/* ポップアップボックス */
+.popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  margin: 10% auto;
+}
 
-          select {
-            font-size: 12px;
-          }
+.user-container {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  /* 垂直方向の中央揃え */
+  gap: 10px;
+  /* ラベルとボタンの間の余白 */
+}
 
-          .search-area {
-            /* top: 50px; */
-            padding-top: 30px;
-          }
+.loginButton {
+  flex: 1;
+  background: #d900ff;
+  color: white;
+  font-size: 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2);
+}
 
-          dialog.syosai {
-            width: 75%
-          }
+.loginButton:hover {
+  background-color: #d900ff92;
+}
 
-          .detail-container {
-            display: block
-          }
+/* 閉じるボタン */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 18px;
+  cursor: pointer;
+}
 
-        }
+/* スマホ用のスタイル */
+@media (max-width: 768px) {
+  .tytle-image {
+    width: 70vw;
+    height: auto;
+  }
+
+  .search-area {
+    margin-top: 15px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  dialog.toroku {
+    width: 75%;
+  }
+
+  select {
+    font-size: 12px;
+  }
+
+  .search-area {
+    /* top: 50px; */
+    padding-top: 30px;
+  }
+
+  dialog.syosai {
+    width: 75%
+  }
+
+  .detail-container {
+    display: block
+  }
+
+}
