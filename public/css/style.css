@@ -368,7 +368,7 @@ dialog.syosai {
 /* スマホ用のスタイル */
 @media (max-width: 768px) {
   .tytle-image {
-    width: 70vw;
+    width: 60vw;
     height: auto;
   }
 
