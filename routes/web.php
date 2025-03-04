@@ -45,3 +45,11 @@ Route::get('/dashboard', function () {
     }
     return "ようこそ、" . session('user_name') . "さん";
 })->name('dashboard');
+
+//ログインステータスチェック
+Route::get('/check-login', function (Request $request) {
+    return response()->json([
+        'logged_in' => Session::has('user_name'),
+        'user_name' => Session::get('user_name', ''),
+    ]);
+});

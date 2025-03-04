@@ -15,6 +15,9 @@
         <button onclick="search()">検索</button>
     </div>
 </div>
+<div id="authContainer">
+    <button class="loginBtn" type="button" onclick="openPopup()">ログイン</button>
+</div>
     {{-- バリデーションチェックエラー表示 --}}
     @if($errors->any())
     <div eroor_msg>

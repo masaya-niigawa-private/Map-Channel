@@ -333,3 +333,15 @@ document.addEventListener('DOMContentLoaded', function () {
       .catch(error => console.error('Error:', error));
   });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+  fetch("/check-login") // ログイン状態を確認
+    .then(response => response.json())
+    .then(data => {
+      if (data.logged_in) {
+        document.getElementById("authContainer").innerHTML =
+          `<span class="loggedInText">ログイン中: ${data.user_name}</span>`;
+      }
+    })
+    //.catch(error => console.error("Error:", error));
+});

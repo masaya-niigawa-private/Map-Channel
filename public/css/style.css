@@ -365,6 +365,36 @@ dialog.syosai {
   cursor: pointer;
 }
 
+.loginBtn {
+  position: absolute;
+  z-index: 10;
+  top: 3vh;
+  left: 5vw;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-weight: bold;
+  color: #ffffff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 3px;
+}
+
+.loginBtn:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+.loggedInText {
+  position: absolute;
+  z-index: 10;
+  top: 3vh;
+  left: 5vw;
+  background-color: white;
+  font-size: 20px;
+  color: #862cf3;
+  font-weight: bold;
+}
+
 /* スマホ用のスタイル */
 @media (max-width: 768px) {
   .tytle-image {
@@ -400,4 +430,14 @@ dialog.syosai {
     display: block
   }
 
+  .loginBtn {
+    top: 8vh;
+    left: 3%;
+  }
+
+  .loggedInText{
+    font-size: 15px;
+    top: 12vh;
+    left: 3%;
+  }
 }
