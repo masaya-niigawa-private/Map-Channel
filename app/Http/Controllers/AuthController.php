@@ -57,7 +57,7 @@ class AuthController extends Controller
     {
         // バリデーション
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:users',
             'email' => 'nullable|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
         ]);
