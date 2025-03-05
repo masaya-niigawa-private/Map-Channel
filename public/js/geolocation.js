@@ -308,6 +308,7 @@ document.addEventListener('DOMContentLoaded', function () {
     event.preventDefault(); // デフォルトのフォーム送信を防ぐ
 
     let formData = new FormData(this);
+    const dialog = document.querySelector(".toroku");
 
     fetch("/login", {
       method: "POST",
@@ -321,10 +322,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if (data.success) {
           closePopup();
           alert("ログイン成功！");
-          // ユーザー情報を表示
+          if (!dialog.open) {
+            location.reload();
+          }
           document.getElementById("login_user_name").value = data.user_name;
           document.getElementById("login_user_name").style.display = 'block';
-          // ログインボタンを非表示
           document.querySelector(".loginButton").style.display = "none";
         } else {
           alert("ログインに失敗しました");
@@ -339,9 +341,12 @@ document.addEventListener("DOMContentLoaded", function () {
     .then(response => response.json())
     .then(data => {
       if (data.logged_in) {
+        document.getElementById("login_user_name").value = data.user_name;
+        document.getElementById("login_user_name").style.display = 'block';
+        document.querySelector(".loginButton").style.display = "none";
         document.getElementById("authContainer").innerHTML =
           `<span class="loggedInText">ログイン中: ${data.user_name}</span>`;
       }
     })
-    //.catch(error => console.error("Error:", error));
+  //.catch(error => console.error("Error:", error));
 });
