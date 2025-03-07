@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Spot;
+use App\Models\Comment;
 use App\Models\Opinion;
 
 class AdminController extends Controller
@@ -35,8 +36,13 @@ class AdminController extends Controller
                 $path = $file->store('photo', 's3');
                 $spot->photo_path = $path;
             };
+            $comment = new Comment();
+            $comment->ido = $request['ido'];
+            $comment->keido = $request['keido'];
+            $comment->comment = $request['comment'];
             //DBに保存
             $spot->save();
+            $comment->save();
             // 登録成功時にリダイレクト
             return redirect('/')->with('message', '正常に登録されました。');
         } catch (\Exception $e) {

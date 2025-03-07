@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
@@ -7,36 +8,37 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <title>マップちゃんねる</title>
 </head>
+
 <body>
-<div class="container">
-    <img class="tytle-image" src="/icon/マップちゃんねるタイトル.png" alt="マップちゃんねる" />
-    <div class="search-area">
-        <input type="text" id="input" placeholder="検索" name="search">
-        <button onclick="search()">検索</button>
+    <div class="container">
+        <img class="tytle-image" src="/icon/マップちゃんねるタイトル.png" alt="マップちゃんねる" />
+        <div class="search-area">
+            <input type="text" id="input" placeholder="検索" name="search">
+            <button onclick="search()">検索</button>
+        </div>
     </div>
-</div>
-<div id="authContainer">
-    <button class="loginBtn" type="button" onclick="openPopup()">ログイン</button>
-</div>
+    <div id="authContainer">
+        <button class="loginBtn" type="button" onclick="openPopup()">ログイン</button>
+    </div>
     {{-- バリデーションチェックエラー表示 --}}
     @if($errors->any())
-    <div eroor_msg>
-        <ul>
-            @foreach ($errors -> all() as $error)
-            <li>{{$error}}</li>
-            @endforeach
-        </ul>
-    </div>
+        <div eroor_msg>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{$error}}</li>
+                @endforeach
+            </ul>
+        </div>
     @endif
     {{-- スポット登録 成功/失敗メッセージ表示 --}}
     @if (session('message'))
-    <div class="alert alert-success">
-        {{ session('message') }}
-    </div>
+        <div class="alert alert-success">
+            {{ session('message') }}
+        </div>
     @elseif (session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
     @endif
     <!-- 地図 -->
     <script>
@@ -46,7 +48,7 @@
         <script src="/js/geolocation.js"></script>
         <script async defer
             src="https://maps.googleapis.com/maps/api/js?key={{$api_key}}&libraries=places&callback=initMap">
-        </script>
+            </script>
     </div>
     <!-- 登録リンク案内 -->
     <div class="center-text">
@@ -74,58 +76,63 @@
     <dialog class="toroku">
         <button class="close-button" onclick="document.querySelector('.toroku').close()">×</button>
         <div class="toroku-tytle">まっぷ登録</div>
-    <form class="toroku-form" action="/form" method="post" enctype="multipart/form-data">
-        @csrf
-        <input type="hidden" id="id_ido" name="ido">
-        <input type="hidden" id="id_keido" name="keido">
-    
-        <!-- ページ 1 -->
-        <div id="page1">
-            <div>
-                <label for="category">カテゴリー</label>
-                <select name="category">
-                    <option value="">選択してください</option>
-                    <option value="関大">関大</option>
-                    <option value="喫煙スポット">喫煙スポット</option>
-                    <option value="イベント">イベント</option>
-                    <option value="500円以下ランチ">500円以下ランチ</option>
-                    <option value="ぴんく">ぴんく</option>
-                    <option value="キッチンカー">キッチンカー</option>
-                </select>
-            </div>
-            <div>
-                <label for="spot_name">名前</label>
-                <input type="text" class="toroku-form-control" name="spot_name" placeholder="場所名を入力してください">
-            </div>
-            <div>
-                <label for="evaluation">評価</label>
-                <select name="evaluation">
-                    <option value="">選択してください</option>
-                    <option value="1">⭐</option>
-                    <option value="2">⭐⭐</option>
-                    <option value="3">⭐⭐⭐</option>
-                    <option value="4">⭐⭐⭐⭐</option>
-                    <option value="5">⭐⭐⭐⭐⭐</option>
-                </select>
-            </div>
-            <button class="pageButton" type="button" onclick="nextPage()">次ページ</button>
-        </div>
+        <form class="toroku-form" action="/form" method="post" enctype="multipart/form-data">
+            @csrf
+            <input type="hidden" id="id_ido" name="ido">
+            <input type="hidden" id="id_keido" name="keido">
 
-        <!-- ページ 2 -->
-        <div id="page2" style="display: none;">
-            <div>
-                <label for="photo">画像</label>
-                <input type="file" class="toroku-form-control" name="photo">
+            <!-- ページ 1 -->
+            <div id="page1">
+                <div>
+                    <label for="category">カテゴリー</label>
+                    <select name="category">
+                        <option value="">選択してください</option>
+                        <option value="関大">関大</option>
+                        <option value="喫煙スポット">喫煙スポット</option>
+                        <option value="イベント">イベント</option>
+                        <option value="500円以下ランチ">500円以下ランチ</option>
+                        <option value="ぴんく">ぴんく</option>
+                        <option value="キッチンカー">キッチンカー</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="spot_name">名前</label>
+                    <input type="text" class="toroku-form-control" name="spot_name" placeholder="場所名を入力してください">
+                </div>
+                <div>
+                    <label for="evaluation">評価</label>
+                    <select name="evaluation">
+                        <option value="">選択してください</option>
+                        <option value="1">⭐</option>
+                        <option value="2">⭐⭐</option>
+                        <option value="3">⭐⭐⭐</option>
+                        <option value="4">⭐⭐⭐⭐</option>
+                        <option value="5">⭐⭐⭐⭐⭐</option>
+                    </select>
+                </div>
+                <button class="pageButton" type="button" onclick="nextPage()">次ページ</button>
             </div>
-            <div class="user-container">
-                <label for="login_user_name" style="margin-top:initial">登録者</label>
-                <input readonly id="login_user_name" class="toroku-form-control" type="text" style="display:none">
-                <button class="loginButton" type="button" onclick="openPopup()">ログイン</button>
+
+            <!-- ページ 2 -->
+            <div id="page2" style="display: none;">
+                <div>
+                    <label for="photo">画像</label>
+                    <input type="file" class="toroku-form-control" name="photo">
+                </div>
+                <div class="user-container">
+                    <label for="login_user_name" style="margin-top:initial">登録者</label>
+                    <input readonly id="login_user_name" class="toroku-form-control" type="text" style="display:none">
+                    <button class="loginButton" type="button" onclick="openPopup()">ログイン</button>
+                </div>
+                <div>
+                    <label for="comment">コメント</label>
+                    <textarea class="textarea" name="comment" rows="3" cols="30" style="resize: none;"
+                        placeholder="コメントを入力してください"></textarea>
+                </div>
+                <button class="pageButton" type="button" onclick="prevPage()">前ページ</button>
+                <button type="submit" class="toroku-button">登録</button>
             </div>
-            <button class="pageButton" type="button" onclick="prevPage()">前ページ</button>
-            <button type="submit" class="toroku-button">登録</button>
-        </div>
-    </form>
+        </form>
     </dialog>
 
     <!-- ログインポップアップウィンドウ -->
@@ -145,14 +152,14 @@
             </form>
         </div>
     </dialog>
-    
+
     <!-- スポット詳細ポップアップ -->
     <dialog class="syosai">
         <button class="close-button" onclick="document.querySelector('.syosai').close()">×</button>
         <div class="syosai-popup-content">
             <!-- <input type="hidden" id="end_ido"> -->
             <!-- <input type="hidden" id="end_keido"> -->
-            <div class = "spot-image-popup-container">
+            <div class="spot-image-popup-container">
                 <img class="spot-image-popup" id="spot-image1" max-width="40%" height="auto" alt="画像なし" />
             </div>
             <div class="syosai-popup-group">
@@ -164,10 +171,10 @@
 
     <!-- スポット詳細（画面下部） -->
     <div class="detail-container">
-        <div class = "spot-image-container">
+        <div class="spot-image-container">
             <img class="spot-image" id="spot-image2" max-width="40%" height="auto" alt="画像なし" />
         </div>
-        <div class = "info-container">
+        <div class="info-container">
             <div class="form-group">
                 <label for="spot_name" class="syosai-form-label">場所</label>
                 <input type="text" class="syosai-form-control" id="spot_name2" disabled>
