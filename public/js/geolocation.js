@@ -85,18 +85,18 @@ function addExistingMarkers(map) {
       document.getElementById('user_name').value = (spotData[i].user_name);
       document.getElementById('createc_at').value = spotData[i].created_at.split('T')[0].replace(/-/g, '/');
 
-      const photo_path = spotData[i].photo_path;
-      const image1 = document.getElementById('spot-image1');
-      const image2 = document.getElementById('spot-image2');
-      if (photo_path) {
-        image1.src = "";
-        image2.src = "";
-        image1.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photo_path;
-        image2.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photo_path;
-      } else {
-        image1.src = "";
-        image2.src = "";
-      }
+      // const photo_path = spotData[i].photo_path;
+      // const image1 = document.getElementById('spot-image1');
+      // const image2 = document.getElementById('spot-image2');
+      // if (photo_path) {
+      //   image1.src = "";
+      //   image2.src = "";
+      //   image1.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photo_path;
+      //   image2.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photo_path;
+      // } else {
+      //   image1.src = "";
+      //   image2.src = "";
+      // }
 
       //詳細ポップアップ画面表示（11/14追加）
       const syosai = document.querySelector('.syosai');

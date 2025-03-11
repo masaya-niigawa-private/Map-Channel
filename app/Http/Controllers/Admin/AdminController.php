@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Spot;
 use App\Models\Comment;
 use App\Models\Opinion;
+use App\Models\Photo;
 
 class AdminController extends Controller
 {
@@ -31,10 +32,14 @@ class AdminController extends Controller
             $spot->spot_name = $request['spot_name'];
             $spot->evaluation = $request['evaluation'];
             $spot->user_name = $request['user_name'];
+
+            $photo = new Photo();
+            $photo->spot_id = $spot->id;
             $file = $request->file('photo');
             if ($file) {
+                //S3上のファイル名
                 $path = $file->store('photo', 's3');
-                $spot->photo_path = $path;
+                $photo->photo_path = $path;
             };
             $comment = new Comment();
             $comment->ido = $request['ido'];
