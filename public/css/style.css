@@ -275,8 +275,8 @@ dialog.syosai {
   padding: 10px;
 }
 
-.spot-image {
-  max-width: 100%;
+.spot-image-container img {
+  width: 100%;
   height: auto;
   border-radius: 20px;
 }
@@ -395,9 +395,9 @@ dialog.syosai {
   font-weight: bold;
 }
 
-.textarea{
+.textarea {
   width: 100%;
-  height:42px
+  height: 42px
 }
 
 /* スマホ用のスタイル */
@@ -440,7 +440,7 @@ dialog.syosai {
     left: 3%;
   }
 
-  .loggedInText{
+  .loggedInText {
     font-size: 15px;
     top: 12vh;
     left: 3%;

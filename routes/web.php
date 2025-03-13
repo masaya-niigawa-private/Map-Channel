@@ -53,3 +53,9 @@ Route::get('/check-login', function (Request $request) {
         'user_name' => Session::get('user_name', ''),
     ]);
 });
+
+//コメント取得
+Route::get('/comments/{id}', [AdminController::class, 'getComments']);
+
+//写真取得
+Route::get('/photos/{id}', [AdminController::class, 'getPhotos']);

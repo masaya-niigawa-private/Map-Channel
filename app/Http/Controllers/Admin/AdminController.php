@@ -32,22 +32,25 @@ class AdminController extends Controller
             $spot->spot_name = $request['spot_name'];
             $spot->evaluation = $request['evaluation'];
             $spot->user_name = $request['user_name'];
+            $spot->save();
 
-            $photo = new Photo();
-            $photo->spot_id = $spot->id;
             $file = $request->file('photo');
             if ($file) {
+            $photo = new Photo();
+            $photo->spot_id = $spot->id;
                 //S3上のファイル名
                 $path = $file->store('photo', 's3');
                 $photo->photo_path = $path;
+                $photo->save();
             };
-            $comment = new Comment();
-            $comment->ido = $request['ido'];
-            $comment->keido = $request['keido'];
-            $comment->comment = $request['comment'];
-            //DBに保存
-            $spot->save();
-            $comment->save();
+
+            $comment = $request['comment'];
+            if($comment){
+                $comment = new Comment();
+                $comment->spot_id = $spot->id;
+                $comment->comment = $request['comment'];
+                $comment->save();
+            }
             // 登録成功時にリダイレクト
             return redirect('/')->with('message', '正常に登録されました。');
         } catch (\Exception $e) {
@@ -81,5 +84,19 @@ class AdminController extends Controller
             // 例外発生時にエラーメッセージを表示
             return back()->with('error', '送信に失敗しました。' . $e->getMessage());
         }
+    }
+
+    //commentsテーブル検索
+    public function getComments($id)
+    {
+        $comments = Comment::where('spot_id', $id)->get();
+        return response()->json($comments);
+    }
+
+    //photsテーブル検索
+    public function getPhotos($id)
+    {
+        $photos = Photo::where('spot_id', $id)->get();
+        return response()->json($photos);
     }
 }

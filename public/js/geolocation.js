@@ -59,7 +59,7 @@ function onGetPositionError() {
 }
 
 // 既存スポットのマーカーを追加
-function addExistingMarkers(map) {
+async function addExistingMarkers(map) {
   //マーカーの配列
   let markers = [];
 
@@ -74,11 +74,9 @@ function addExistingMarkers(map) {
         scaledSize: new google.maps.Size(40, 40)
       }
     });
-    //詳細情報を'syousai'ページに渡す
-    marker.addListener('click', function () {
-      //経路表示用の'end_ido' 'end_keido'
-      // document.getElementById('end_ido').value = parseFloat(spotData[i].ido);
-      // document.getElementById('end_keido').value = parseFloat(spotData[i].keido);
+    //マーカークリック時に詳細表示
+    marker.addListener('click', async function () {
+      //document.getElementById('spot_id').value = parseFloat(spotData[i].id);
       document.getElementById('spot_name1').value = (spotData[i].spot_name);
       document.getElementById('spot_name2').value = (spotData[i].spot_name);
       document.getElementById('evaluation').value = '★'.repeat((spotData[i].evaluation));
@@ -98,7 +96,35 @@ function addExistingMarkers(map) {
       //   image2.src = "";
       // }
 
-      //詳細ポップアップ画面表示（11/14追加）
+      const id = spotData[i].id;
+      //コメントを検索
+      try {
+        const response = await fetch(`/comments/${id}`);
+        const comments = await response.json();
+        const commentSection = document.getElementById('comment');
+        if (comments.length > 0) {
+          commentSection.value = comments[0].comment; // inputのvalueに設定
+        } else {
+          commentSection.value = ''; // コメントがなければ空にする
+        }
+      } catch (error) {
+        alert(error.message);
+      }
+
+      //写真を検索
+      try {
+        const response = await fetch(`/photos/${id}`);
+        const photos = await response.json();
+        photos.forEach(photo => {
+          console.log(photo.photo_path);
+          image2 = document.getElementById('spot-image2');
+          image2.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photo.photo_path;
+        });
+      } catch (error) {
+        alert(error.message);
+      }
+
+      //詳細ポップアップ表示（11/14追加）
       const syosai = document.querySelector('.syosai');
       syosai.showModal();
 
