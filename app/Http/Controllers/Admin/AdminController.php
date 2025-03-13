@@ -34,18 +34,21 @@ class AdminController extends Controller
             $spot->user_name = $request['user_name'];
             $spot->save();
 
-            $file = $request->file('photo');
-            if ($file) {
-            $photo = new Photo();
-            $photo->spot_id = $spot->id;
-                //S3上のファイル名
-                $path = $file->store('photo', 's3');
-                $photo->photo_path = $path;
-                $photo->save();
-            };
+            if ($request->hasFile('photo')) {
+                foreach ($request->file('photo') as $file) {
+                    if ($file) {
+                        $photo = new Photo();
+                        $photo->spot_id = $spot->id;
+                        // S3にアップロード
+                        $path = $file->store('photo', 's3');
+                        $photo->photo_path = $path;
+                        $photo->save();
+                    }
+                }
+            }
 
             $comment = $request['comment'];
-            if($comment){
+            if ($comment) {
                 $comment = new Comment();
                 $comment->spot_id = $spot->id;
                 $comment->comment = $request['comment'];

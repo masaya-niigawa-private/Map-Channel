@@ -117,7 +117,7 @@
             <div id="page2" style="display: none;">
                 <div>
                     <label for="photo">画像</label>
-                    <input type="file" class="toroku-form-control" name="photo">
+                    <input type="file" class="toroku-form-control" name="photo[]" multiple>
                 </div>
                 <div class="user-container">
                     <label for="login_user_name" style="margin-top:initial">登録者</label>
@@ -170,8 +170,7 @@
 
     <!-- スポット詳細（画面下部） -->
     <div class="detail-container">
-        <div class="spot-image-container">
-            <img class="spot-image" id="spot-image2" max-width="40%" height="auto" alt="画像なし" />
+        <div class="spot-image-container" id="spot-image2">
         </div>
         <div class="info-container">
             <div class="form-group">
