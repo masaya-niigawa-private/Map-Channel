@@ -115,10 +115,14 @@ async function addExistingMarkers(map) {
       try {
         const response = await fetch(`/photos/${id}`);
         const photos = await response.json();
+        image2 = document.getElementById('spot-image2');
+        image2.innerHTML = '';
+
         photos.forEach(photo => {
-          console.log(photo.photo_path);
-          image2 = document.getElementById('spot-image2');
-          image2.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photo.photo_path;
+          const img = document.createElement('img');
+          img.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photo.photo_path;
+          img.alt = "画像なし"
+          image2.appendChild(img);
         });
       } catch (error) {
         alert(error.message);
