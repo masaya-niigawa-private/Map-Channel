@@ -157,7 +157,6 @@
     <dialog class="syosai">
         <button class="close-button" onclick="document.querySelector('.syosai').close()">×</button>
         <div class="syosai-popup-content">
-            <input type="hidden" id="spot_id">
             <div class="spot-image-popup-container">
                 <img class="spot-image-popup" id="spot-image1" max-width="40%" height="auto" alt="画像なし" />
             </div>
@@ -169,25 +168,30 @@
     </dialog>
 
     <!-- スポット詳細（画面下部） -->
+    <button id="editButton" onclick="editButtonClick()">修正</button>
+    <button id="editSubmitButton" onclick="editSubmitButtonClick()">修正完了</button>
     <div class="detail-container">
         <div class="spot-image-container" id="spot-image2">
         </div>
         <div class="info-container">
+            <input type="hidden" id='spot_id'>
             <div class="form-group">
                 <label for="spot_name" class="syosai-form-label">場所</label>
                 <input type="text" class="syosai-form-control" id="spot_name2" disabled>
             </div>
             <div class="form-group">
                 <label for="evaluation" class="syosai-form-label">評価</label>
-                <input type="text" class="syosai-form-control" id="evaluation" disabled>
+                <div id="evaluationContainer">
+                    <input type="text" class="syosai-form-control" id="evaluationDisplay" disabled>
+                </div>
             </div>
             <div class="form-group">
                 <label for="user_name" class="syosai-form-label">登録者</label>
                 <input type="text" class="syosai-form-control" id="user_name" disabled>
             </div>
             <div class="form-group">
-                <label for="createc_at" class="syosai-form-label">登録日</label>
-                <input type="text" class="syosai-form-control" id="createc_at" disabled>
+                <label for="created_at" class="syosai-form-label">登録日</label>
+                <input type="text" class="syosai-form-control" id="created_at" disabled>
             </div>
             <div class="form-group">
                 <label for="comment" class="syosai-form-label">コメント</label>

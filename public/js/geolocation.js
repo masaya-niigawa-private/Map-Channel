@@ -76,25 +76,12 @@ async function addExistingMarkers(map) {
     });
     //マーカークリック時に詳細表示
     marker.addListener('click', async function () {
-      //document.getElementById('spot_id').value = parseFloat(spotData[i].id);
+      document.getElementById('spot_id').value = parseFloat(spotData[i].id);
       document.getElementById('spot_name1').value = (spotData[i].spot_name);
       document.getElementById('spot_name2').value = (spotData[i].spot_name);
-      document.getElementById('evaluation').value = '★'.repeat((spotData[i].evaluation));
+      document.getElementById('evaluationDisplay').value = '★'.repeat((spotData[i].evaluation));
       document.getElementById('user_name').value = (spotData[i].user_name);
-      document.getElementById('createc_at').value = spotData[i].created_at.split('T')[0].replace(/-/g, '/');
-
-      // const photo_path = spotData[i].photo_path;
-      // const image1 = document.getElementById('spot-image1');
-      // const image2 = document.getElementById('spot-image2');
-      // if (photo_path) {
-      //   image1.src = "";
-      //   image2.src = "";
-      //   image1.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photo_path;
-      //   image2.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photo_path;
-      // } else {
-      //   image1.src = "";
-      //   image2.src = "";
-      // }
+      document.getElementById('created_at').value = spotData[i].created_at.split('T')[0].replace(/-/g, '/');
 
       const id = spotData[i].id;
       //コメントを検索
@@ -134,6 +121,9 @@ async function addExistingMarkers(map) {
       //詳細ポップアップ表示（11/14追加）
       const syosai = document.querySelector('.syosai');
       syosai.showModal();
+
+      //修正ボタン表示
+      document.getElementById("editButton").style.display = "block";
 
     });
     //配列に入れる
@@ -336,6 +326,7 @@ function closePopup() {
   document.querySelector(".loginPopup").close();
 }
 
+//ログイン認証
 document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('loginForm').addEventListener('submit', function (event) {
     event.preventDefault(); // デフォルトのフォーム送信を防ぐ
@@ -383,3 +374,67 @@ document.addEventListener("DOMContentLoaded", function () {
     })
   //.catch(error => console.error("Error:", error));
 });
+
+// 修正ボタンの処理
+function editButtonClick() {
+  document.getElementById("editButton").style.display = "none";
+  document.getElementById("editSubmitButton").style.display = "block";
+  document.getElementById("spot_name2").disabled = false;
+  const evaluationDisplay = document.getElementById("evaluationDisplay");
+  evaluationDisplay.style.display = 'none';
+  document.getElementById("user_name").disabled = false;
+  document.getElementById("created_at").disabled = false;
+  document.getElementById("comment").disabled = false;
+  //以下 評価セレクトボックス表示
+  const selectElement = document.createElement('select');
+  const value = evaluationDisplay.value.length;
+  selectElement.id = 'evaluationSelectBox';
+  // オプションを追加
+  const options = [
+    { value: value, text: '修正前' + '⭐'.repeat(value) },
+    { value: '1', text: '⭐' },
+    { value: '2', text: '⭐⭐' },
+    { value: '3', text: '⭐⭐⭐' },
+    { value: '4', text: '⭐⭐⭐⭐' },
+    { value: '5', text: '⭐⭐⭐⭐⭐' }
+  ];
+
+  options.forEach(option => {
+    const optionElement = document.createElement('option');
+    optionElement.value = option.value;
+    optionElement.textContent = option.text;
+    selectElement.appendChild(optionElement);
+  });
+
+  // 作成した select 要素を表示
+  const evaluationContainer = document.getElementById('evaluationContainer');
+  evaluationContainer.innerHTML = '';  // 既存の内容をクリア
+  evaluationContainer.appendChild(selectElement);
+};
+
+async function editSubmitButtonClick() {
+  let data = {
+    spot_name: document.getElementById('spot_name2').value,
+    evaluation: document.getElementById('evaluationSelectBox').value,
+    user_name: document.getElementById('user_name').value,
+    created_at: document.getElementById('created_at').value,
+    comment: document.getElementById('comment').value
+  };
+  const id = document.getElementById('spot_id').value;
+  try {
+    const response = await fetch(`/update/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        "X-CSRF-TOKEN": document.querySelector('input[name=_token]').value
+      },
+      body: JSON.stringify(data)
+    });
+    const result = await response.json();
+    alert(result.message);
+    window.location.href = '/';
+  } catch (error) {
+    //console.error('Error:', error);
+  }
+};

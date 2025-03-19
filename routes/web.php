@@ -59,3 +59,6 @@ Route::get('/comments/{id}', [AdminController::class, 'getComments']);
 
 //写真取得
 Route::get('/photos/{id}', [AdminController::class, 'getPhotos']);
+
+//修正機能update
+Route::patch('/update/{id}', [AdminController::class, 'update']);

@@ -102,4 +102,40 @@ class AdminController extends Controller
         $photos = Photo::where('spot_id', $id)->get();
         return response()->json($photos);
     }
+
+    //修正機能
+    public function update(Request $request)
+    {
+        $validatedData = $request->validate([
+            'spot_name' => 'required|string|max:255',
+            'evaluation' => 'required|string|max:255',
+            'user_name' => 'nullable|string|max:255',
+            'comment' => 'nullable|string|max:1000',
+        ]);
+
+        // spot_idをキーにレコード取得
+        $spot = Spot::find($request['id']);
+        $comment = Comment::find($request['id']);
+
+        if ($spot) {
+            if (isset($validatedData['spot_name'])) {
+                $spot->spot_name = $validatedData['spot_name'];
+            }
+            if (isset($validatedData['evaluation'])) {
+                $spot->evaluation = $validatedData['evaluation'];
+            }
+            if (isset($validatedData['user_name'])) {
+                $spot->user_name = $validatedData['user_name'];
+            }
+            $spot->save();
+        }
+
+        if ($comment) {
+            if (isset($validatedData['comment'])) {
+                $comment->comment = $validatedData['comment'];
+                $comment->save();
+            }
+        }
+        return response()->json(['message' => '更新が完了しました']);
+    }
 }

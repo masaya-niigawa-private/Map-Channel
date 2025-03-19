@@ -404,6 +404,14 @@ dialog.syosai {
   height: 42px
 }
 
+#editButton {
+  display: none;
+}
+
+#editSubmitButton {
+  display: none;
+}
+
 /* スマホ用のスタイル */
 @media (max-width: 768px) {
   .tytle-image {
