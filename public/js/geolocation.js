@@ -76,6 +76,10 @@ async function addExistingMarkers(map) {
     });
     //マーカークリック時に詳細表示
     marker.addListener('click', async function () {
+      //修正状態の場合はリセット
+      if (window.getComputedStyle(editButton).display === "none") {
+        resetEditState();
+      }
       document.getElementById('spot_id').value = parseFloat(spotData[i].id);
       document.getElementById('spot_name1').value = (spotData[i].spot_name);
       document.getElementById('spot_name2').value = (spotData[i].spot_name);
@@ -382,7 +386,7 @@ function editButtonClick() {
   document.getElementById("editSubmitButton").style.display = "block";
   document.getElementById("spot_name2").disabled = false;
   const evaluationDisplay = document.getElementById("evaluationDisplay");
-  evaluationDisplay.style.display = 'none';
+  evaluationDisplay.style.display = "none";
   document.getElementById("user_name").disabled = false;
   document.getElementById("created_at").disabled = false;
   document.getElementById("comment").disabled = false;
@@ -409,7 +413,6 @@ function editButtonClick() {
 
   // 作成した select 要素を表示
   const evaluationContainer = document.getElementById('evaluationContainer');
-  evaluationContainer.innerHTML = '';  // 既存の内容をクリア
   evaluationContainer.appendChild(selectElement);
 };
 
@@ -439,3 +442,19 @@ async function editSubmitButtonClick() {
     //console.error('Error:', error);
   }
 };
+
+//修正状態の解除
+function resetEditState() {
+  document.getElementById("editButton").style.display = "block";
+  document.getElementById("editSubmitButton").style.display = "none";
+  document.getElementById("spot_name2").disabled = true;
+  const evaluationDisplay = document.getElementById("evaluationDisplay");
+  evaluationDisplay.style.display = 'block';
+  document.getElementById("user_name").disabled = true;
+  document.getElementById("created_at").disabled = true;
+  document.getElementById("comment").disabled = true;
+
+  // セレクトボックスを削除し、元の評価表示に戻す
+  const evaluationContainer = document.getElementById('evaluationContainer');
+  evaluationContainer.appendChild(evaluationDisplay); // 元の評価表示を復元
+}
