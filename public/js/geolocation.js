@@ -436,8 +436,21 @@ async function editSubmitButtonClick() {
       body: JSON.stringify(data)
     });
     const result = await response.json();
+
+    // 失敗時の処理
+    if (!response.ok) {
+      // バリデーションエラー（422）の場合
+      if (response.status === 422 && result.errors) {
+        let errorMessages = Object.values(result.errors).flat().join("\n");
+        alert(errorMessages);
+      } else {
+        alert("エラーが発生しました。");
+      }
+      return; // 画面リロードしない
+    }
+    // 成功時の処理
     alert(result.message);
-    window.location.href = '/';
+    window.location.href = '/'; // 成功時のみリダイレクト
   } catch (error) {
     //console.error('Error:', error);
   }
