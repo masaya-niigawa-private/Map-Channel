@@ -110,12 +110,13 @@ class AdminController extends Controller
             'spot_name' => 'required|string|max:255',
             'evaluation' => 'required|string|max:255',
             'user_name' => 'nullable|string|max:255',
+            'created_at' => 'nullable|date',
             'comment' => 'nullable|string|max:1000',
         ]);
 
         // spot_idをキーにレコード取得
         $spot = Spot::find($request['id']);
-        $comment = Comment::find($request['id']);
+        $comment = Comment::where('spot_id', $request['id'])->first();
 
         if ($spot) {
             if (isset($validatedData['spot_name'])) {
@@ -123,6 +124,9 @@ class AdminController extends Controller
             }
             if (isset($validatedData['evaluation'])) {
                 $spot->evaluation = $validatedData['evaluation'];
+            }
+            if (isset($validatedData['created_at'])) {
+                $spot->created_at = $validatedData['created_at'];
             }
             if (isset($validatedData['user_name'])) {
                 $spot->user_name = $validatedData['user_name'];
