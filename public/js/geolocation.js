@@ -81,7 +81,8 @@ async function addExistingMarkers(map) {
       document.getElementById('spot_name2').value = (spotData[i].spot_name);
       document.getElementById('evaluationDisplay').value = '★'.repeat((spotData[i].evaluation));
       document.getElementById('user_name').value = (spotData[i].user_name);
-      document.getElementById('created_at').value = spotData[i].created_at.split('T')[0].replace(/-/g, '/');
+      const createdAtJST = new Date(spotData[i].created_at);
+      document.getElementById('created_at').value = createdAtJST.toLocaleDateString('ja-JP');
 
       const id = spotData[i].id;
       //コメントを検索
