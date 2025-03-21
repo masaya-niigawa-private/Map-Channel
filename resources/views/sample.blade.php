@@ -168,7 +168,7 @@
     </dialog>
 
     <!-- スポット詳細（画面下部） -->
-    <div class="detail-container">
+    <!-- <div class="detail-container">
         <div class="spot-image-container" id="spot-image2">
             </div>
             <div class="info-container">
@@ -198,7 +198,48 @@
                 <input type="text" class="syosai-form-control" id="comment" disabled>
             </div>
         </div>
-    </div>
+    </div> -->
+    <main class="detail-container">
+        <button id="editButton" onclick="editButtonClick()">修正</button>
+        <button id="editSubmitButton" onclick="editSubmitButtonClick()">修正確定</button>
+        <input type="hidden" id='spot_id'>
+        <div class="category">
+            <label>カテゴリー</label>
+            <input id="category" type="text" disabled>
+        </div>
+        <div class="spot_name">
+            <label class="">場所</label>
+            <input id="spot_name2" type="text" disabled>
+        </div>
+        <div class="main-image">
+            <img id="main-image" alt="画像なし">
+        </div>
+        <img src="thumb1.png" alt="サブ画像１" class="sub-image1">
+        <img src="thumb2.png" alt="サブ画像２" class="sub-image2">
+        <img src="thumb3.png" alt="サブ画像３" class="sub-image3">
+        <button class="add-btn">＋</button>
+        <div class="info-left">
+            <label>営業時間</label>
+            <input type="text" value="午前9時〜午後9時" disabled>
+            <label>登録者コメント</label>
+            <input type="text" id="comment" disabled>
+            <div id="evaluationContainer">
+                <label>評価</label>
+                <input type="text" id="evaluationDisplay" disabled>
+            </div>
+            <label>登録者</label>
+            <input type="text" id="user_name" disabled>
+            <label>登録日</label>
+            <input type="text" id="created_at" disabled>
+        </div>
+        <div class="info-right">
+            <label>スレッド</label>
+            <input type="text" value="スレッド1" disabled>
+            <input type="text" value="スレッド2" disabled>
+            <input type="text" value="スレッド3" disabled>
+        </div>
+    </main>
+    </main>
 </body>
 
 </html>
