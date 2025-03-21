@@ -168,12 +168,12 @@
     </dialog>
 
     <!-- スポット詳細（画面下部） -->
-    <button id="editButton" onclick="editButtonClick()">修正</button>
-    <button id="editSubmitButton" onclick="editSubmitButtonClick()">修正完了</button>
     <div class="detail-container">
         <div class="spot-image-container" id="spot-image2">
-        </div>
-        <div class="info-container">
+            </div>
+            <div class="info-container">
+            <button id="editButton" onclick="editButtonClick()">修正</button>
+            <button id="editSubmitButton" onclick="editSubmitButtonClick()">修正確定</button>
             <input type="hidden" id='spot_id'>
             <div class="form-group">
                 <label for="spot_name" class="syosai-form-label">場所</label>
