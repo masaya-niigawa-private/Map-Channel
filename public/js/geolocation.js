@@ -77,7 +77,7 @@ async function addExistingMarkers(map) {
     //マーカークリック時に詳細表示
     marker.addListener('click', async function () {
       //修正状態の場合はリセット
-      if (window.getComputedStyle(editButton).display === "none") {
+      if (isEditButtonClicked) {
         resetEditState();
       }
       document.getElementById('spot_id').value = parseFloat(spotData[i].id);
@@ -381,7 +381,9 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // 修正ボタンの処理
+let isEditButtonClicked = false;//フラグ
 function editButtonClick() {
+  isEditButtonClicked = true;
   document.getElementById("editButton").style.display = "none";
   document.getElementById("editSubmitButton").style.display = "block";
   document.getElementById("spot_name2").disabled = false;
@@ -458,6 +460,7 @@ async function editSubmitButtonClick() {
 
 //修正状態の解除
 function resetEditState() {
+  isEditButtonClicked = false;
   document.getElementById("editButton").style.display = "block";
   document.getElementById("editSubmitButton").style.display = "none";
   document.getElementById("spot_name2").disabled = true;
@@ -466,8 +469,5 @@ function resetEditState() {
   document.getElementById("user_name").disabled = true;
   document.getElementById("created_at").disabled = true;
   document.getElementById("comment").disabled = true;
-
-  // セレクトボックスを削除し、元の評価表示に戻す
-  const evaluationContainer = document.getElementById('evaluationContainer');
-  evaluationContainer.appendChild(evaluationDisplay); // 元の評価表示を復元
+  document.getElementById('evaluationSelectBox').style.display = 'none';
 }
