@@ -8,6 +8,7 @@ use App\Models\Spot;
 use App\Models\Comment;
 use App\Models\Opinion;
 use App\Models\Photo;
+use App\Models\Post;
 
 class AdminController extends Controller
 {
@@ -141,5 +142,28 @@ class AdminController extends Controller
             }
         }
         return response()->json(['message' => '更新が完了しました']);
+    }
+
+    public function getPosts(Request $request)
+    {
+        $posts = Post::where('spot_id', $request['id'])->latest()->get();// 投稿を新しい順に取得
+        return response()->json($posts);
+    }
+
+    public function storePost(Request $request)
+    {
+        $request->validate([
+            'spot_id' => 'required',
+            'author' => 'string|max:255',
+            'content' => 'required|string|max:1000',
+        ]);
+
+        Post::create([
+            'spot_id' => $request->spot_id,
+            'author' => $request->author,
+            'content' => $request->content,
+        ]);
+
+        return redirect('/')->with('message', '投稿されました。');
     }
 }

@@ -62,3 +62,7 @@ Route::get('/photos/{id}', [AdminController::class, 'getPhotos']);
 
 //修正機能update
 Route::patch('/update/{id}', [AdminController::class, 'update']);
+
+//スレッド投稿
+Route::get('/posts/{id}', [AdminController::class, 'getPosts'])->name('get.posts');
+Route::post('/posts', [AdminController::class, 'storePost'])->name('store.post');

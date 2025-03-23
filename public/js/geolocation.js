@@ -80,8 +80,8 @@ async function addExistingMarkers(map) {
       if (isEditButtonClicked) {
         resetEditState();
       }
+      document.getElementById('spot_id').value = (spotData[i].id);
       document.getElementById('category').value = (spotData[i].category);
-      document.getElementById('spot_id').value = parseFloat(spotData[i].id);
       document.getElementById('spot_name1').value = (spotData[i].spot_name);
       document.getElementById('spot_name2').value = (spotData[i].spot_name);
       document.getElementById('evaluationDisplay').value = '★'.repeat((spotData[i].evaluation));
@@ -130,6 +130,27 @@ async function addExistingMarkers(map) {
         }
       } catch (error) {
         alert(error.message);
+      }
+
+      //スレッドコメント検索
+      try {
+        const postContainer = document.getElementById('postContainer');
+        postContainer.innerHTML = '';
+        const response = await fetch(`/posts/${id}`);
+        const posts = await response.json();
+        if (posts.length > 0) {
+          posts.forEach(post => {
+            const postElement = document.createElement('div');
+            postElement.innerHTML = `
+                <p><strong>${post.author || '名無し'}　</strong>${formatDate(post.created_at)}</p>
+                <p>${post.content}</p>
+                <hr>
+            `;
+            postContainer.appendChild(postElement);
+          });
+        }
+      } catch {
+
       }
 
       //詳細ポップアップ表示（11/14追加）
@@ -389,7 +410,7 @@ document.addEventListener("DOMContentLoaded", function () {
   //.catch(error => console.error("Error:", error));
 });
 
-// 修正ボタンの処理
+// 修正ボタンクリック
 let isEditButtonClicked = false;//フラグ
 function editButtonClick() {
   isEditButtonClicked = true;
@@ -427,6 +448,7 @@ function editButtonClick() {
   evaluationContainer.appendChild(selectElement);
 };
 
+//修正完了ボタンクリック
 async function editSubmitButtonClick() {
   let data = {
     spot_name: document.getElementById('spot_name2').value,
@@ -480,3 +502,12 @@ function resetEditState() {
   document.getElementById("comment").disabled = true;
   document.getElementById('evaluationSelectBox').style.display = 'none';
 }
+
+//日付フォーマット
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // 月を2桁に
+  const day = String(date.getDate()).padStart(2, '0'); // 日を2桁に
+  return `${year}/${month}/${day}`;
+};

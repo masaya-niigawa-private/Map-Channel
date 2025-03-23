@@ -202,7 +202,6 @@
     <main class="detail-container">
         <button id="editButton" onclick="editButtonClick()">修正</button>
         <button id="editSubmitButton" onclick="editSubmitButtonClick()">修正確定</button>
-        <input type="hidden" id='spot_id'>
         <div class="category">
             <label>カテゴリー</label>
             <input id="category" type="text" disabled>
@@ -234,9 +233,14 @@
         </div>
         <div class="info-right">
             <label>スレッド</label>
-            <input type="text" value="スレッド1" disabled>
-            <input type="text" value="スレッド2" disabled>
-            <input type="text" value="スレッド3" disabled>
+            <form action="{{ route('store.post')}}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="spot_id" id="spot_id">
+                <input type="text" name="author" placeholder="投稿者名">
+                <textarea name="content" placeholder="投稿内容" required></textarea>
+                <button type="submit">投稿</button>
+            </form>
+            <div id="postContainer"></div>
         </div>
     </main>
     </main>
