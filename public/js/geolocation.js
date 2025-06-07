@@ -3,29 +3,37 @@ let latitude;
 let longitude;
 let latlng;
 let placesService;
-// let directionsService;
-// let directionsRenderer;
 
-// 初期表示時に現在地を表示する
+// 現在地取得してマップを移動
+// function moveToCurrentLocation() {
+//   if (navigator.geolocation) {
+//     navigator.geolocation.getCurrentPosition(
+//       position => {
+//         const currentLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+//         map.setCenter(currentLatLng);
+//         new google.maps.Marker({
+//           position: currentLatLng,
+//           map: map,
+//           title: "現在地"
+//         });
+//       },
+//       () => {
+//         alert("現在地の取得に失敗しました。");
+//       }
+//     );
+//   } else {
+//     alert("このブラウザは位置情報に対応していません。");
+//   }
+// }
+
+// マップ初期表示
 async function initMap() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(onGetPositionSuccess, onGetPositionError);
-  } else {
-    alert("このブラウザは位置情報に対応していません。");
-  }
-}
-
-// 現在地取得成功時のコールバック
-function onGetPositionSuccess(position) {
-  //経路オブジェクト
-  //directionsService = new google.maps.DirectionsService();
-  //directionsRenderer = new google.maps.DirectionsRenderer();
-  latitude = position.coords.latitude;
-  longitude = position.coords.longitude;
-  latlng = new google.maps.LatLng(latitude, longitude);
-
+  //関大の正門
+  latlng = new google.maps.LatLng(34.773476, 135.508861);
   map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 13,
+    zoom: 17,
+    tilt: 45, 
+    heading: 270,
     center: latlng,
     gestureHandling: "greedy",//指1本操作
     mapTypeControl: false,//「地図」「航空写真」を非表示
@@ -40,8 +48,8 @@ function onGetPositionSuccess(position) {
       }
     ]
   });
-  //レンダラーにマップセット
-  //directionsRenderer.setMap(map);
+  //正門がマップ上側になるように方角設定
+  map.setHeading(270);
 
   // Places Serviceを初期化
   placesService = new google.maps.places.PlacesService(map);
@@ -51,11 +59,6 @@ function onGetPositionSuccess(position) {
 
   // クリック地点のマーカーを設定
   setupClickListener(map);
-}
-
-// 現在地取得失敗時のコールバック
-function onGetPositionError() {
-  alert("位置情報の取得に失敗しました。");
 }
 
 // 既存スポットのマーカーを追加
@@ -108,18 +111,6 @@ async function addExistingMarkers(map) {
       try {
         const response = await fetch(`/photos/${id}`);
         const photos = await response.json();
-        // if (photos.length > 0) {
-        //   image1 = document.getElementById('spot-image1');
-        //   mainImage = document.getElementById('main-image');
-        //   image1.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photos[0].photo_path;
-        //   mainImage.innerHTML = '';
-        //   photos.forEach(photo => {
-        //     const img = document.createElement('img');
-        //     img.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photo.photo_path;
-        //     img.alt = "画像なし"
-        //     mainImage.appendChild(img);
-        //   });
-        // }
         if (photos.length > 0) {
           image1 = document.getElementById('spot-image1');
           mainImage = document.getElementById('main-image');
@@ -205,26 +196,6 @@ function updateInfotable(lat, lng) {
 // windowオブジェクトに入れる
 window.initMap = initMap;
 
-//★2024/11/16 登録フォームをポップアップ画面に変更したので不要
-//登録ボタンの活性,非活性を制御
-// function buttonController() {
-//   const id_ido = document.getElementById('id_ido');
-//   const submitButton = document.getElementById('submitButton');
-//   //地図をクリックされていれば登録ボタンを活性にする
-//   id_ido.addEventListener('input', function () {
-//     if (id_ido.value.trim() !== '') {
-//       submitButton.disabled = false;
-//     } else {
-//       submitButton.disabled = true;
-//     }
-//   });
-//   if (id_ido.value.trim() !== '') {
-//     submitButton.disabled = false;
-//   } else {
-//     submitButton.disabled = true;
-//   }
-// }
-
 //場所検索ボックスのセットアップ処理
 function search() {
   const query = document.getElementById("input").value;
@@ -261,39 +232,6 @@ function searchQuery(query) {
     }
   });
 }
-
-//経路をマップに表示
-// function calcRoute() {
-//   //コンストラクタの使い方→new google.maps.LatLng(経度,緯度)
-//   const start = new google.maps.LatLng(latitude, longitude);
-//   const end_ido = document.getElementById('end_ido').value;
-//   const end_keido = document.getElementById('end_keido').value;
-//   const end = new google.maps.LatLng(end_ido, end_keido);
-
-//   const request = {
-//     origin: start,
-//     destination: end,
-//     travelMode: 'DRIVING'
-//   };
-//   directionsService.route(request, function (result, status) {
-//     if (status == 'OK') {
-//       directionsRenderer.setDirections(result);
-//     }
-//   });
-// }
-
-//SPAするため
-// function navigate(pageId) {
-//   // すべてのページを非表示にする
-//   const pages = document.querySelectorAll('.page');
-//   pages.forEach(page => page.classList.remove('active'));
-
-//   // 指定されたページのみを表示する
-//   const activePage = document.getElementById(pageId);
-//   if (activePage) {
-//       activePage.classList.add('active');
-//   }
-// }
 
 //2024/11/16
 //ダイアログ外をクリックした場合に閉じる
