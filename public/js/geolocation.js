@@ -3,6 +3,7 @@ let latitude;
 let longitude;
 let latlng;
 let placesService;
+let isEditButtonClicked = false;//フラグ
 
 // 初期表示時に現在地を表示する
 async function initMap_allCategory() {
@@ -240,7 +241,8 @@ function updateInfotable(lat, lng) {
 }
 
 // windowオブジェクトに入れる
-window.initMap = initMap;
+window.initMap_kandai = initMap_kandai;
+window.initMap_allCategory = initMap_allCategory;
 
 //場所検索ボックスのセットアップ処理
 function search() {
@@ -395,7 +397,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // 修正ボタンクリック
-let isEditButtonClicked = false;//フラグ
 function editButtonClick() {
   isEditButtonClicked = true;
   document.getElementById("editButton").style.display = "none";
@@ -467,7 +468,9 @@ async function editSubmitButtonClick() {
     }
     // 成功時の処理
     alert(result.message);
-    window.location.href = '/'; // 成功時のみリダイレクト
+    if (result.redirect_url) {
+      window.location.href = result.redirect_url;
+    }
   } catch (error) {
     //console.error('Error:', error);
   }
