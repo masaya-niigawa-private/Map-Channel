@@ -71,6 +71,14 @@ class AdminController extends Controller
         return $all_spots_json;
     }
 
+    //spotテーブルから全データ取得
+    public function getKandai()
+    {
+        $kandai_spots = Spot::where('category', '関大')->get();
+        $kandai_spots_json = json_encode($kandai_spots);
+        return $kandai_spots_json;
+    }
+
     //意見・要望をDBに保存
     public function opinion_submit(Request $request)
     {

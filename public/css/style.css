@@ -35,6 +35,8 @@ body {
 }
 
 .tytle-image {
+  pointer-events: none;
+  top:-45vh;
   width: 30vw;
   height: auto;
   position: absolute;

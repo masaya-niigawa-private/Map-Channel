@@ -4,6 +4,52 @@ let longitude;
 let latlng;
 let placesService;
 
+// 初期表示時に現在地を表示する
+async function initMap_allCategory() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(onGetPositionSuccess, onGetPositionError);
+  } else {
+    alert("このブラウザは位置情報に対応していません。");
+  }
+}
+
+// 現在地取得成功時のコールバック
+function onGetPositionSuccess(position) {
+  latitude = position.coords.latitude;
+  longitude = position.coords.longitude;
+  latlng = new google.maps.LatLng(latitude, longitude);
+
+  map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 13,
+    center: latlng,
+    gestureHandling: "greedy",//指1本操作
+    mapTypeControl: false,//「地図」「航空写真」を非表示
+    fullscreenControl: false,//「フルスクリーン」ボタン無効化
+    streetViewControl: false,
+    zoomControl: false,
+    styles: [
+      {
+        featureType: "poi.business",//商業施設を非表示
+        elementType: "labels",
+        stylers: [{ visibility: "off" }]
+      }
+    ]
+  });
+
+  // Places Serviceを初期化
+  placesService = new google.maps.places.PlacesService(map);
+
+  // 既存スポットのマーカーを生成
+  addExistingMarkers(map);
+
+  // クリック地点のマーカーを設定
+  setupClickListener(map);
+}
+
+// 現在地取得失敗時のコールバック
+function onGetPositionError() {
+  alert("位置情報の取得に失敗しました。");
+}
 // 現在地取得してマップを移動
 // function moveToCurrentLocation() {
 //   if (navigator.geolocation) {
@@ -27,12 +73,12 @@ let placesService;
 // }
 
 // マップ初期表示
-async function initMap() {
+async function initMap_kandai() {
   //関大の正門
   latlng = new google.maps.LatLng(34.773476, 135.508861);
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 17,
-    tilt: 45, 
+    tilt: 45,
     heading: 270,
     center: latlng,
     gestureHandling: "greedy",//指1本操作

@@ -47,7 +47,7 @@
     <div class="map" id="map">
         <script src="/js/geolocation.js"></script>
         <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key={{$api_key}}&libraries=places&callback=initMap">
+            src="https://maps.googleapis.com/maps/api/js?key={{$api_key}}&libraries=places&callback=initMap_kandai">
             </script>
     </div>
     <!-- 登録リンク案内 -->

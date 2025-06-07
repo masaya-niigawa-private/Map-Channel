@@ -14,6 +14,16 @@ class MapController extends Controller
         //GOOGLE_MAPS_API_KEYを取得
         $api_key = env('GOOGLE_MAPS_API_KEY');
         //Viewに渡す
-        return view("sample", compact('spots', 'api_key'));
+        return view("all_category", compact('spots', 'api_key'));
+    }
+
+    public function showKandaiMap(){
+        //Spotテーブルを取得
+        $admin = new AdminController();
+        $spots = $admin->getKandai();
+        //GOOGLE_MAPS_API_KEYを取得
+        $api_key = env('GOOGLE_MAPS_API_KEY');
+        //Viewに渡す
+        return view("kandai", compact('spots', 'api_key'));
     }
 }
