@@ -12,10 +12,10 @@
 <body>
     <div class="container">
         <img class="tytle-image" src="/icon/マップちゃんねるタイトル.png" alt="マップちゃんねる" />
-        <div class="search-area">
+        <!-- <div class="search-area">
             <input type="text" id="input" placeholder="検索" name="search">
             <button onclick="search()">検索</button>
-        </div>
+        </div> -->
     </div>
     <div id="authContainer">
         <button class="loginBtn" type="button" onclick="openPopup()">ログイン</button>
