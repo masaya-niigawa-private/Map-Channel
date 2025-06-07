@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\AuthController;
-
+use App\Http\Controllers\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,17 +17,20 @@ use App\Http\Controllers\AuthController;
 |
 */
 
-//マップ初期表示
-Route::get('/', [MapController::class,'showMap'] );
+//マップ初期表示（オールジャンル）
+Route::get('/', [MapController::class, 'showMap']);
+
+//マップ初期表示（関大）
+Route::get('/ku', [MapController::class, 'showKandaiMap']);
 
 //スポット登録
-Route::post('/form', [AdminController::class,'store'] );
+Route::post('/form', [AdminController::class, 'store']);
 
 //意見・要望送信
-Route::post('/opinion', [AdminController::class,'opinion_submit'] );
+Route::post('/opinion', [AdminController::class, 'opinion_submit']);
 
 //ログイン
-Route::get('/login', [AuthController::class,'showLoginform'] );
+Route::get('/login', [AuthController::class, 'showLoginform']);
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
@@ -66,3 +69,10 @@ Route::patch('/update/{id}', [AdminController::class, 'update']);
 //スレッド投稿
 Route::get('/posts/{id}', [AdminController::class, 'getPosts'])->name('get.posts');
 Route::post('/posts', [AdminController::class, 'storePost'])->name('store.post');
+
+//stripe決済
+Route::get('/checkout', [PaymentController::class, 'showCheckout']);
+Route::post('/payment', [PaymentController::class, 'processPayment']);
+
+//stripe決済
+Route::get('/completed', [PaymentController::class, 'showCompleted']);

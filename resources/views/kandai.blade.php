@@ -11,7 +11,7 @@
 
 <body>
     <div class="container">
-        <img class="tytle-image" src="/icon/マップちゃんねるタイトル.png" alt="マップちゃんねる" />
+        <img class="tytle-image" src="/icon/マップちゃんねる_ver2.PNG" alt="マップちゃんねる" />
         <!-- <div class="search-area">
             <input type="text" id="input" placeholder="検索" name="search">
             <button onclick="search()">検索</button>

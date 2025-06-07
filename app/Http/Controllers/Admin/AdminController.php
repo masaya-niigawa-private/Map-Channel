@@ -56,7 +56,7 @@ class AdminController extends Controller
                 $comment->save();
             }
             // 登録成功時にリダイレクト
-            return redirect('/')->with('message', '正常に登録されました。');
+            return redirect()->back()->with('message', '正常に登録されました。');
         } catch (\Exception $e) {
             // 例外発生時にエラーメッセージを表示
             return back()->with('error', '登録に失敗しました。' . $e->getMessage());
@@ -91,7 +91,7 @@ class AdminController extends Controller
             $opinion->opinion = $request['opinion'];
             // $opinion->$request['category'];
             $opinion->save();
-            return redirect('/')->with('message', '送信されました。');
+            return redirect()->back()->with('message', '送信されました。');
         } catch (\Exception $e) {
             // 例外発生時にエラーメッセージを表示
             return back()->with('error', '送信に失敗しました。' . $e->getMessage());
@@ -149,7 +149,11 @@ class AdminController extends Controller
                 $comment->save();
             }
         }
-        return response()->json(['message' => '更新が完了しました']);
+        return response()->json([
+            'message' => '正常に修正されました。',
+            'redirect_url' => url()->previous(),
+        ]);
+
     }
 
     public function getPosts(Request $request)
@@ -172,6 +176,6 @@ class AdminController extends Controller
             'content' => $request->content,
         ]);
 
-        return redirect('/')->with('message', '投稿されました。');
+        return redirect()->back()->with('message', '投稿されました。');
     }
 }

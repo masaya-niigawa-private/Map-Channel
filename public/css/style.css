@@ -36,12 +36,11 @@ body {
 
 .tytle-image {
   pointer-events: none;
-  top:-45vh;
-  width: 30vw;
+  width: 32vw;
   height: auto;
   position: absolute;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -43%);
 }
 
 .search-area {
