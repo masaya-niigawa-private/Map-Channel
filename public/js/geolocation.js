@@ -159,12 +159,32 @@ async function addExistingMarkers(map) {
         const response = await fetch(`/photos/${id}`);
         const photos = await response.json();
         if (photos.length > 0) {
-          image1 = document.getElementById('spot-image1');
-          mainImage = document.getElementById('main-image');
-          image1.innerHTML = '';
+          const popupImage = document.getElementById('popup-image');
+          const mainImage = document.getElementById('main-image');
+
+          popupImage.innerHTML = '';
           mainImage.innerHTML = '';
-          image1.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photos[0].photo_path;
-          mainImage.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photos[0].photo_path;
+
+          // ポップアップ用
+          popupImage.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photos[0].photo_path;
+
+          photos.forEach((photo, index) => {
+            const img = document.createElement('img');
+            img.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photo.photo_path;
+            img.alt = 'Photo ' + (index + 1);
+
+            if (index === 0) {
+              img.className = 'large';
+            } else if (index === 1) {
+              img.className = 'small small-1';
+            } else if (index === 2) {
+              img.className = 'small small-2';
+            } else if (index === 3) {
+              img.className = 'small small-3';
+            }
+
+            mainImage.appendChild(img);
+          });
         }
       } catch (error) {
         alert(error.message);

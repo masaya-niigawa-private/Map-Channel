@@ -158,7 +158,7 @@
         <button class="close-button" onclick="document.querySelector('.syosai').close()">×</button>
         <div class="syosai-popup-content">
             <div class="spot-image-popup-container">
-                <img class="spot-image-popup" id="spot-image1" max-width="40%" height="auto" alt="画像なし" />
+                <img class="spot-image-popup" id="popup-image" alt="画像なし" />
             </div>
             <div class="syosai-popup-group">
                 <label for="spot_name" class="syosai-popup-label">場所：</label>
@@ -168,37 +168,6 @@
     </dialog>
 
     <!-- スポット詳細（画面下部） -->
-    <!-- <div class="detail-container">
-        <div class="spot-image-container" id="spot-image2">
-            </div>
-            <div class="info-container">
-            <button id="editButton" onclick="editButtonClick()">修正</button>
-            <button id="editSubmitButton" onclick="editSubmitButtonClick()">修正確定</button>
-            <input type="hidden" id='spot_id'>
-            <div class="form-group">
-                <label for="spot_name" class="syosai-form-label">場所</label>
-                <input type="text" class="syosai-form-control" id="spot_name2" disabled>
-            </div>
-            <div class="form-group">
-                <label for="evaluation" class="syosai-form-label">評価</label>
-                <div id="evaluationContainer">
-                    <input type="text" class="syosai-form-control" id="evaluationDisplay" disabled>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="user_name" class="syosai-form-label">登録者</label>
-                <input type="text" class="syosai-form-control" id="user_name" disabled>
-            </div>
-            <div class="form-group">
-                <label for="created_at" class="syosai-form-label">登録日</label>
-                <input type="text" class="syosai-form-control" id="created_at" disabled>
-            </div>
-            <div class="form-group">
-                <label for="comment" class="syosai-form-label">コメント</label>
-                <input type="text" class="syosai-form-control" id="comment" disabled>
-            </div>
-        </div>
-    </div> -->
     <main class="detail-container">
         <button id="editButton" onclick="editButtonClick()">修正</button>
         <button id="editSubmitButton" onclick="editSubmitButtonClick()">修正確定</button>
@@ -210,13 +179,8 @@
             <label class="">場所</label>
             <input id="spot_name2" type="text" disabled>
         </div>
-        <div class="main-image">
-            <img id="main-image" alt="画像なし">
-        </div>
-        <img src="thumb1.png" alt="サブ画像１" class="sub-image1">
-        <img src="thumb2.png" alt="サブ画像２" class="sub-image2">
-        <img src="thumb3.png" alt="サブ画像３" class="sub-image3">
-        <button class="add-btn">＋</button>
+        <div class="image-grid" id="main-image"></div>
+        <!-- <button class="add-btn">＋</button> -->
         <div class="info-left">
             <label>営業時間</label>
             <input type="text" value="午前9時〜午後9時" disabled>
@@ -242,7 +206,6 @@
             </form>
             <div id="postContainer"></div>
         </div>
-    </main>
     </main>
 </body>
 
