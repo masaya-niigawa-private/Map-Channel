@@ -76,3 +76,6 @@ Route::post('/payment', [PaymentController::class, 'processPayment']);
 
 //stripe決済
 Route::get('/completed', [PaymentController::class, 'showCompleted']);
+
+//画像削除
+Route::delete('/photos/{id}', [AdminController::class, 'deletePhoto']);

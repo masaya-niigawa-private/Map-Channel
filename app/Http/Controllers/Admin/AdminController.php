@@ -9,6 +9,7 @@ use App\Models\Comment;
 use App\Models\Opinion;
 use App\Models\Photo;
 use App\Models\Post;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -112,7 +113,7 @@ class AdminController extends Controller
         return response()->json($photos);
     }
 
-    //修正機能
+    //更新機能（修正ボタン）
     public function update(Request $request)
     {
         $validatedData = $request->validate([
@@ -154,6 +155,29 @@ class AdminController extends Controller
             'redirect_url' => url()->previous(),
         ]);
 
+    }
+
+    public function deletePhoto($id)
+    {
+        try {
+            // レコード取得
+            $photo = Photo::findOrFail($id);
+
+            // S3から画像削除
+            if ($photo->photo_path) {
+                $s3Path = $photo->photo_path;
+                if (Storage::disk('s3')->exists($s3Path)) {
+                    Storage::disk('s3')->delete($s3Path);
+                }
+            }
+
+            // DBからレコード削除
+            $photo->delete();
+
+            return response()->json(['message' => '画像を削除しました。'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => '削除に失敗しました: ' . $e->getMessage()], 500);
+        }
     }
 
     public function getPosts(Request $request)

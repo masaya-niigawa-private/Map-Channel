@@ -4,6 +4,7 @@
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <title>マップちゃんねる</title>
@@ -55,22 +56,22 @@
         登録をする場合は下記のリンクから登録ページで行うことができます。
     </div>
     <!-- ジャンル別リンク -->
-    <div class="categories">
+    <!-- <div class="categories">
         <a href="https://smokingarea6.wordpress.com/about/">喫煙所</a>
         <a href="https://smokingarea6.wordpress.com/about/">チルスポ</a>
         <a href="https://smokingarea6.wordpress.com/about/">ビーガン</a>
         <a href="https://smokingarea6.wordpress.com/about/">外国スーパー</a>
         <a href="https://smokingarea6.wordpress.com/about/">抜き（:18歳未満禁止:）</a>
-    </div>
+    </div> -->
     <!-- 問い合わせフォーム -->
-    <form action="/opinion" method="post">
+    <!-- <form action="/opinion" method="post">
         @csrf
         <div class="contact-form">
             <p>MAPの新規ジャンルを増やしてほしいなどの問い合わせはこちらから↓</p>
             <textarea name="opinion" placeholder="ご意見・ご要望を入力してください"></textarea><br>
             <button type="submit">送信</button>
         </div>
-    </form>
+    </form> -->
 
     <!-- 登録フォーム画面 -->
     <dialog class="toroku">
@@ -185,7 +186,7 @@
             <label>営業時間</label>
             <input type="text" value="午前9時〜午後9時" disabled>
             <label>登録者コメント</label>
-            <input type="text" id="comment" disabled>
+            <textarea id="comment" disabled></textarea>
             <div id="evaluationContainer">
                 <label>評価</label>
                 <input type="text" id="evaluationDisplay" disabled>

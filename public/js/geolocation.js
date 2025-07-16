@@ -161,12 +161,22 @@ async function addExistingMarkers(map) {
         if (photos.length > 0) {
           const popupImage = document.getElementById('popup-image');
           const mainImage = document.getElementById('main-image');
-
           popupImage.innerHTML = '';
           mainImage.innerHTML = '';
 
-          // ポップアップ用
           popupImage.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photos[0].photo_path;
+          
+          const leftCol = document.createElement('div');
+          const rightColWrapper = document.createElement('div');
+          const rightCol = document.createElement('div');
+
+          leftCol.className = 'left-column';
+          rightColWrapper.className = 'right-scroll';
+          rightCol.className = 'right-column';
+
+          rightColWrapper.appendChild(rightCol);
+          mainImage.appendChild(leftCol);
+          mainImage.appendChild(rightColWrapper);
 
           photos.forEach((photo, index) => {
             const img = document.createElement('img');
@@ -175,15 +185,36 @@ async function addExistingMarkers(map) {
 
             if (index === 0) {
               img.className = 'large';
-            } else if (index === 1) {
-              img.className = 'small small-1';
-            } else if (index === 2) {
-              img.className = 'small small-2';
-            } else if (index === 3) {
-              img.className = 'small small-3';
+              leftCol.appendChild(img);
+            } else {
+              img.className = 'small';
+              rightCol.appendChild(img);
             }
-
-            mainImage.appendChild(img);
+            //画像クリック時の削除イベント（※修正フラグがTRUEの場合に発動する）
+            img.addEventListener('click', async () => {
+              if (!isEditButtonClicked) return;
+              const confirmDelete = confirm('この画像を削除しますか？');
+              if (confirmDelete) {
+                try {
+                  const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                  const deleteRes = await fetch(`/photos/${photo.id}`, {
+                    method: 'DELETE',
+                    headers: {
+                      'X-CSRF-TOKEN': token, // ← これが必要
+                      'Accept': 'application/json',
+                    },
+                  });
+                  if (deleteRes.ok) {
+                    img.remove(); // 表示から削除
+                    alert('画像を削除しました。');
+                  } else {
+                    alert('削除に失敗しました。');
+                  }
+                } catch (err) {
+                  alert('エラーが発生しました: ' + err.message);
+                }
+              }
+            });
           });
         }
       } catch (error) {
