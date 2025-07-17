@@ -165,6 +165,10 @@
                 <label for="spot_name" class="syosai-popup-label">場所：</label>
                 <input type="text" class="syosai-popup-control" id="spot_name1" disabled>
             </div>
+            <div style="display: flex; gap: 12px; justify-content: center; margin: 16px 0;">
+                <button id="prev-spot-btn">前へ</button>
+                <button id="next-spot-btn">次へ</button>
+            </div>
         </div>
     </dialog>
 

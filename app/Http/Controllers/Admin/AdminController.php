@@ -10,6 +10,7 @@ use App\Models\Opinion;
 use App\Models\Photo;
 use App\Models\Post;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -201,5 +202,27 @@ class AdminController extends Controller
         ]);
 
         return redirect()->back()->with('message', '投稿されました。');
+    }
+
+    public function getNearby(Request $request)
+    {
+        $lat = $request->input('lat');
+        $lng = $request->input('lng');
+        $radius = 5; // km（必要なら調整）
+
+        $spots = DB::select(
+            "SELECT id, category, spot_name, photo_path, evaluation, user_name, created_at,
+                (6371 * acos(
+                    cos(radians(?)) * cos(radians(ido))
+                    * cos(radians(keido) - radians(?))
+                    + sin(radians(?)) * sin(radians(ido))
+                )) AS distance
+            FROM spots
+            HAVING distance < ?
+            ORDER BY distance ASC
+            LIMIT 10", //件数（必要なら調整）
+            [$lat, $lng, $lat, $radius]
+        );
+        return response()->json($spots);
     }
 }

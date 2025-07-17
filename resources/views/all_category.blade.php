@@ -48,8 +48,7 @@
     <div class="map" id="map">
         <script src="/js/geolocation.js"></script>
         <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key={{$api_key}}&libraries=places&callback=initMap_allCategory">
-            </script>
+            src="https://maps.googleapis.com/maps/api/js?key={{$api_key}}&libraries=places&callback=initMap_allCategory"></script>
     </div>
     <!-- 登録リンク案内 -->
     <div class="center-text">
@@ -154,16 +153,20 @@
         </div>
     </dialog>
 
-    <!-- スポット詳細ポップアップ -->
+    <!-- スポット情報ポップアップ -->
     <dialog class="syosai">
-        <button class="close-button" onclick="document.querySelector('.syosai').close()">×</button>
         <div class="syosai-popup-content">
+            <button class="close-button" onclick="document.querySelector('.syosai').close()">×</button>
             <div class="spot-image-popup-container">
                 <img class="spot-image-popup" id="popup-image" alt="画像なし" />
             </div>
             <div class="syosai-popup-group">
                 <label for="spot_name" class="syosai-popup-label">場所：</label>
                 <input type="text" class="syosai-popup-control" id="spot_name1" disabled>
+            </div>
+            <div style="display: flex; gap: 12px; justify-content: center; margin: 16px 0;">
+                <button id="prev-spot-btn">前へ</button>
+                <button id="next-spot-btn">次へ</button>
             </div>
         </div>
     </dialog>
