@@ -73,6 +73,20 @@ class AdminController extends Controller
         return $all_spots_json;
     }
 
+    // 範囲のみ返却（新API）
+    public function getSpotsInBounds(Request $request)
+    {
+        $swlat = $request->input('swlat');
+        $swlng = $request->input('swlng');
+        $nelat = $request->input('nelat');
+        $nelng = $request->input('nelng');
+
+        $spots = Spot::whereBetween('ido', [$swlat, $nelat])
+            ->whereBetween('keido', [$swlng, $nelng])
+            ->get();
+        return response()->json($spots);
+    }
+
     //spotテーブルから全データ取得
     public function getKandai()
     {

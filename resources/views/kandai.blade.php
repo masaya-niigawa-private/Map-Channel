@@ -42,9 +42,6 @@
         </div>
     @endif
     <!-- 地図 -->
-    <script>
-        var spotData = JSON.parse({!! json_encode($spots) !!});
-    </script>
     <div class="map" id="map">
         <script src="/js/geolocation.js"></script>
         <script async defer

@@ -114,12 +114,13 @@ async function initMap_kandai() {
 }
 
 //範囲内のマーカーのみ表示
-function showMarkersInBounds() {
+async function showMarkersInBounds() {
   const bounds = map.getBounds();
-  const visibleSpots = spotData.filter(spot =>
-    bounds.contains(new google.maps.LatLng(spot.ido, spot.keido))
-  );
-  addExistingMarkers(map, visibleSpots);
+  const sw = bounds.getSouthWest();
+  const ne = bounds.getNorthEast();
+  const res = await fetch(`/api/spots/in-bounds?swlat=${sw.lat()}&swlng=${sw.lng()}&nelat=${ne.lat()}&nelng=${ne.lng()}`);
+  const spots = await res.json();
+  addExistingMarkers(map, spots);
 }
 
 // 既存スポットのマーカーを生成
@@ -317,7 +318,6 @@ function setupClickListener(map) {
       }
     });
     updateInfotable(marker.getPosition().lat(), marker.getPosition().lng());
-    //navigate('toroku');
 
     //登録フォーム表示11/14追加
     const toroku = document.querySelector('.toroku');
@@ -329,7 +329,6 @@ function setupClickListener(map) {
 function updateInfotable(lat, lng) {
   document.getElementById('id_ido').value = lat;
   document.getElementById('id_keido').value = lng;
-  //buttonController();
 }
 
 // windowオブジェクトに入れる
@@ -721,7 +720,7 @@ async function showNearbySpotDetail(spot) {
     const postContainer = document.getElementById('postContainer');
     postContainer.innerHTML = '';
     const response = await fetch(`/posts/${id}`);
-    const posts = response.json();
+    const posts = await response.json();
     if (posts.length > 0) {
       posts.forEach(post => {
         const postElement = document.createElement('div');

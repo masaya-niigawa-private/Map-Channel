@@ -21,3 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 //近くの座標を取得する
 Route::get('/spots/nearby', [AdminController::class, 'getNearby']);
+
+//表示範囲のみの座標を取得する
+Route::get('/spots/in-bounds', [AdminController::class, 'getSpotsInBounds']);
