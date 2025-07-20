@@ -281,11 +281,7 @@ async function addExistingMarkers(map) {
     //配列に入れる
     markers.push(marker);
   }
-  // Marker Clustererのオプションを設定
-  // const markerCluster = new markerCluster.MarkerClusterer(map, markers,{
-  //     imagePath: 'https ://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
-
-  // });
+  new markerClusterer.MarkerClusterer({ map, markers });
 }
 
 // クリック時のマーカー生成と座標取得

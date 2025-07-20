@@ -50,6 +50,7 @@
         <script async defer
             src="https://maps.googleapis.com/maps/api/js?key={{$api_key}}&libraries=places&callback=initMap_kandai">
             </script>
+        <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
     </div>
     <!-- 登録リンク案内 -->
     <div class="center-text">
