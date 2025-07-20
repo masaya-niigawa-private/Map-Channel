@@ -6,6 +6,7 @@ let placesService;
 let isEditButtonClicked = false;//フラグ
 let nearbySpots = [];
 let currentNearbyIdx = 0;
+let markerCluster = null;
 
 // 初期表示時に現在地を表示する
 async function initMap_allCategory() {
@@ -42,11 +43,12 @@ function onGetPositionSuccess(position) {
   // Places Serviceを初期化
   placesService = new google.maps.places.PlacesService(map);
 
-  // 既存スポットのマーカーを生成
-  addExistingMarkers(map);
-
   // クリック地点のマーカーを設定
   setupClickListener(map);
+
+  //地図初期化時と移動/ズーム時にshowMarkersInBoundsを呼び出す
+  google.maps.event.addListenerOnce(map, 'idle', showMarkersInBounds);
+  map.addListener('idle', showMarkersInBounds);
 }
 
 // 現在地取得失敗時のコールバック
@@ -103,21 +105,36 @@ async function initMap_kandai() {
   // Places Serviceを初期化
   placesService = new google.maps.places.PlacesService(map);
 
-  // 既存スポットのマーカーを生成
-  addExistingMarkers(map);
-
   // クリック地点のマーカーを設定
   setupClickListener(map);
+
+  //地図初期化時と移動/ズーム時にshowMarkersInBoundsを呼び出す
+  google.maps.event.addListenerOnce(map, 'idle', showMarkersInBounds);
+  map.addListener('idle', showMarkersInBounds);
 }
 
-// 既存スポットのマーカーを追加
-async function addExistingMarkers(map) {
+//範囲内のマーカーのみ表示
+function showMarkersInBounds() {
+  const bounds = map.getBounds();
+  const visibleSpots = spotData.filter(spot =>
+    bounds.contains(new google.maps.LatLng(spot.ido, spot.keido))
+  );
+  addExistingMarkers(map, visibleSpots);
+}
+
+// 既存スポットのマーカーを生成
+async function addExistingMarkers(map, spots) {
+
+  // 既存クラスタ削除
+  if (markerCluster) {
+    markerCluster.clearMarkers();
+  }
   //マーカーの配列
   let markers = [];
 
   //DBに保存されているスポット分を繰り返し
-  for (let i = 0; i < spotData.length; i++) {
-    const zahyou = { lat: parseFloat(spotData[i].ido), lng: parseFloat(spotData[i].keido) };
+  for (let i = 0; i < spots.length; i++) {
+    const zahyou = { lat: parseFloat(spots[i].ido), lng: parseFloat(spots[i].keido) };
     let marker = new google.maps.Marker({
       position: zahyou,
       map: map,
@@ -154,16 +171,16 @@ async function addExistingMarkers(map) {
       if (isEditButtonClicked) {
         resetEditState();
       }
-      document.getElementById('spot_id').value = (spotData[i].id);
-      document.getElementById('category').value = (spotData[i].category);
-      document.getElementById('spot_name1').value = (spotData[i].spot_name);
-      document.getElementById('spot_name2').value = (spotData[i].spot_name);
-      document.getElementById('evaluationDisplay').value = '★'.repeat((spotData[i].evaluation));
-      document.getElementById('user_name').value = (spotData[i].user_name);
-      const createdAtJST = new Date(spotData[i].created_at);
+      document.getElementById('spot_id').value = (spots[i].id);
+      document.getElementById('category').value = (spots[i].category);
+      document.getElementById('spot_name1').value = (spots[i].spot_name);
+      document.getElementById('spot_name2').value = (spots[i].spot_name);
+      document.getElementById('evaluationDisplay').value = '★'.repeat((spots[i].evaluation));
+      document.getElementById('user_name').value = (spots[i].user_name);
+      const createdAtJST = new Date(spots[i].created_at);
       document.getElementById('created_at').value = createdAtJST.toLocaleDateString('ja-JP');
 
-      const id = spotData[i].id;
+      const id = spots[i].id;
       //コメントを検索
       try {
         const response = await fetch(`/comments/${id}`);
