@@ -7,6 +7,7 @@ let isEditButtonClicked = false;//フラグ
 let nearbySpots = [];
 let currentNearbyIdx = 0;
 let markerCluster = null;
+let isDetailLoading = false;//API多重発火防止フラグ
 
 // 初期表示時に現在地を表示する
 async function initMap_allCategory() {
@@ -123,17 +124,17 @@ async function showMarkersInBounds() {
   addExistingMarkers(map, spots);
 }
 
-// 既存スポットのマーカーを生成
+// マーカーを生成
 async function addExistingMarkers(map, spots) {
 
   // 既存クラスタ削除
   if (markerCluster) {
     markerCluster.clearMarkers();
   }
+
   //マーカーの配列
   let markers = [];
 
-  //DBに保存されているスポット分を繰り返し
   for (let i = 0; i < spots.length; i++) {
     const zahyou = { lat: parseFloat(spots[i].ido), lng: parseFloat(spots[i].keido) };
     let marker = new google.maps.Marker({
@@ -144,163 +145,172 @@ async function addExistingMarkers(map, spots) {
         scaledSize: new google.maps.Size(40, 40)
       }
     });
+
     //マーカークリック時に詳細表示
     marker.addListener('click', async function () {
 
-      const lat = marker.getPosition().lat();
-      const lng = marker.getPosition().lng();
-
-      // 近くのスポットをAPIで取得
+      if (isDetailLoading) return; // 多重発火防止
+      isDetailLoading = true;
       try {
-        const response = await fetch(`/api/spots/nearby?lat=${lat}&lng=${lng}`);
-        const data = await response.json();
+        const lat = marker.getPosition().lat();
+        const lng = marker.getPosition().lng();
 
-        if (!data.length) {
-          alert('近くにスポットはありません');
-          return;
+        // 近くのスポットをAPIで取得
+        try {
+          const response = await fetch(`/api/spots/nearby?lat=${lat}&lng=${lng}`);
+          const data = await response.json();
+
+          if (!data.length) {
+            alert('近くにスポットはありません');
+            return;
+          }
+          // 取得したスポットを配列に保存
+          nearbySpots = data;
+          currentNearbyIdx = 0;
+          // 最初の1件を既存の詳細表示UIで描画
+          showNearbySpotDetail(nearbySpots[currentNearbyIdx]);
+        } catch (e) {
+          alert('近隣スポットの取得に失敗しました');
         }
-        // 取得したスポットを配列に保存
-        nearbySpots = data;
-        currentNearbyIdx = 0;
-        // 最初の1件を既存の詳細表示UIで描画
-        showNearbySpotDetail(nearbySpots[currentNearbyIdx]);
-      } catch (e) {
-        alert('近隣スポットの取得に失敗しました');
-      }
 
-      //修正状態の場合はリセット
-      if (isEditButtonClicked) {
-        resetEditState();
-      }
-      document.getElementById('spot_id').value = (spots[i].id);
-      document.getElementById('category').value = (spots[i].category);
-      document.getElementById('spot_name1').value = (spots[i].spot_name);
-      document.getElementById('spot_name2').value = (spots[i].spot_name);
-      document.getElementById('evaluationDisplay').value = '★'.repeat((spots[i].evaluation));
-      document.getElementById('user_name').value = (spots[i].user_name);
-      const createdAtJST = new Date(spots[i].created_at);
-      document.getElementById('created_at').value = createdAtJST.toLocaleDateString('ja-JP');
-
-      const id = spots[i].id;
-      //コメントを検索
-      try {
-        const response = await fetch(`/comments/${id}`);
-        const comments = await response.json();
-        const commentSection = document.getElementById('comment');
-        if (comments.length > 0) {
-          commentSection.value = comments[0].comment; // inputのvalueに設定
-        } else {
-          commentSection.value = ''; // コメントがなければ空にする
+        //修正状態の場合はリセット
+        if (isEditButtonClicked) {
+          resetEditState();
         }
-      } catch (error) {
-        alert(error.message);
-      }
+        document.getElementById('spot_id').value = (spots[i].id);
+        document.getElementById('category').value = (spots[i].category);
+        document.getElementById('spot_name1').value = (spots[i].spot_name);
+        document.getElementById('spot_name2').value = (spots[i].spot_name);
+        document.getElementById('evaluationDisplay').value = '★'.repeat((spots[i].evaluation));
+        document.getElementById('user_name').value = (spots[i].user_name);
+        const createdAtJST = new Date(spots[i].created_at);
+        document.getElementById('created_at').value = createdAtJST.toLocaleDateString('ja-JP');
 
-      //写真を検索
-      try {
-        const response = await fetch(`/photos/${id}`);
-        const photos = await response.json();
+        const id = spots[i].id;
+        //コメントを検索
+        try {
+          const response = await fetch(`/comments/${id}`);
+          const comments = await response.json();
+          const commentSection = document.getElementById('comment');
+          if (comments.length > 0) {
+            commentSection.value = comments[0].comment; // inputのvalueに設定
+          } else {
+            commentSection.value = ''; // コメントがなければ空にする
+          }
+        } catch (error) {
+          alert(error.message);
+        }
 
-        const popupImage = document.getElementById('popup-image');
-        const mainImage = document.getElementById('main-image');
+        //写真を検索
+        try {
+          const response = await fetch(`/photos/${id}`);
+          const photos = await response.json();
 
-        if (photos.length > 0) {
-          popupImage.innerHTML = '';
-          mainImage.innerHTML = '';
-          popupImage.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photos[0].photo_path;
+          const popupImage = document.getElementById('popup-image');
+          const mainImage = document.getElementById('main-image');
 
-          const leftCol = document.createElement('div');
-          const rightColWrapper = document.createElement('div');
-          const rightCol = document.createElement('div');
+          if (photos.length > 0) {
+            popupImage.innerHTML = '';
+            mainImage.innerHTML = '';
+            popupImage.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photos[0].photo_path;
 
-          leftCol.className = 'left-column';
-          rightColWrapper.className = 'right-scroll';
-          rightCol.className = 'right-column';
+            const leftCol = document.createElement('div');
+            const rightColWrapper = document.createElement('div');
+            const rightCol = document.createElement('div');
 
-          rightColWrapper.appendChild(rightCol);
-          mainImage.appendChild(leftCol);
-          mainImage.appendChild(rightColWrapper);
+            leftCol.className = 'left-column';
+            rightColWrapper.className = 'right-scroll';
+            rightCol.className = 'right-column';
 
-          photos.forEach((photo, index) => {
-            const img = document.createElement('img');
-            img.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photo.photo_path;
-            img.alt = 'Photo ' + (index + 1);
+            rightColWrapper.appendChild(rightCol);
+            mainImage.appendChild(leftCol);
+            mainImage.appendChild(rightColWrapper);
 
-            if (index === 0) {
-              img.className = 'large';
-              leftCol.appendChild(img);
-            } else {
-              img.className = 'small';
-              rightCol.appendChild(img);
-            }
-            //画像クリック時の削除イベント（※修正フラグがTRUEの場合に発動する）
-            img.addEventListener('click', async () => {
-              if (!isEditButtonClicked) return;
-              const confirmDelete = confirm('この画像を削除しますか？');
-              if (confirmDelete) {
-                try {
-                  const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                  const deleteRes = await fetch(`/photos/${photo.id}`, {
-                    method: 'DELETE',
-                    headers: {
-                      'X-CSRF-TOKEN': token, // ← これが必要
-                      'Accept': 'application/json',
-                    },
-                  });
-                  if (deleteRes.ok) {
-                    img.remove(); // 表示から削除
-                    alert('画像を削除しました。');
-                  } else {
-                    alert('削除に失敗しました。');
-                  }
-                } catch (err) {
-                  alert('エラーが発生しました: ' + err.message);
-                }
+            photos.forEach((photo, index) => {
+              const img = document.createElement('img');
+              img.src = "https://mapappp.s3.ap-northeast-3.amazonaws.com/" + photo.photo_path;
+              img.alt = 'Photo ' + (index + 1);
+
+              if (index === 0) {
+                img.className = 'large';
+                leftCol.appendChild(img);
+              } else {
+                img.className = 'small';
+                rightCol.appendChild(img);
               }
+              //画像クリック時の削除イベント（※修正フラグがTRUEの場合に発動する）
+              img.addEventListener('click', async () => {
+                if (!isEditButtonClicked) return;
+                const confirmDelete = confirm('この画像を削除しますか？');
+                if (confirmDelete) {
+                  try {
+                    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                    const deleteRes = await fetch(`/photos/${photo.id}`, {
+                      method: 'DELETE',
+                      headers: {
+                        'X-CSRF-TOKEN': token, // ← これが必要
+                        'Accept': 'application/json',
+                      },
+                    });
+                    if (deleteRes.ok) {
+                      img.remove(); // 表示から削除
+                      alert('画像を削除しました。');
+                    } else {
+                      alert('削除に失敗しました。');
+                    }
+                  } catch (err) {
+                    alert('エラーが発生しました: ' + err.message);
+                  }
+                }
+              });
             });
-          });
-        } else {
-          popupImage.removeAttribute('src');
-          mainImage.innerHTML = "";
+          } else {
+            popupImage.removeAttribute('src');
+            mainImage.innerHTML = "";
+          }
+        } catch (error) {
+          alert(error.message);
         }
-      } catch (error) {
-        alert(error.message);
-      }
 
-      //スレッドコメント検索
-      try {
-        const postContainer = document.getElementById('postContainer');
-        postContainer.innerHTML = '';
-        const response = await fetch(`/posts/${id}`);
-        const posts = await response.json();
-        if (posts.length > 0) {
-          posts.forEach(post => {
-            const postElement = document.createElement('div');
-            postElement.innerHTML = `
+        //スレッドコメント検索
+        try {
+          const postContainer = document.getElementById('postContainer');
+          postContainer.innerHTML = '';
+          const response = await fetch(`/posts/${id}`);
+          const posts = await response.json();
+          if (posts.length > 0) {
+            posts.forEach(post => {
+              const postElement = document.createElement('div');
+              postElement.innerHTML = `
                 <p><strong>${post.author || '名無し'}　</strong>${formatDate(post.created_at)}</p>
                 <p>${post.content}</p>
                 <hr>
             `;
-            postContainer.appendChild(postElement);
-          });
+              postContainer.appendChild(postElement);
+            });
+          }
+        } catch {
+          // 何もしない
         }
-      } catch {
 
+        //詳細ポップアップ表示（11/14追加）
+        const syosai = document.querySelector('.syosai');
+        syosai.showModal();
+
+        //修正ボタン表示
+        document.getElementById("editButton").style.display = "block";
+      } finally {
+        isDetailLoading = false;
       }
-
-      //詳細ポップアップ表示（11/14追加）
-      const syosai = document.querySelector('.syosai');
-      syosai.showModal();
-
-      //修正ボタン表示
-      document.getElementById("editButton").style.display = "block";
-
     });
+
     //配列に入れる
     markers.push(marker);
   }
+
   new markerClusterer.MarkerClusterer({ map, markers });
 }
+
 
 // クリック時のマーカー生成と座標取得
 function setupClickListener(map) {
