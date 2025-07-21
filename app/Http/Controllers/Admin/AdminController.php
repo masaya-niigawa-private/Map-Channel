@@ -73,7 +73,7 @@ class AdminController extends Controller
         return $all_spots_json;
     }
 
-    // 範囲のみ返却（新API）
+    // 範囲のみのデータを取得（spot,photo,comment,post）
     public function getSpotsInBounds(Request $request)
     {
         $swlat = $request->input('swlat');
@@ -84,6 +84,15 @@ class AdminController extends Controller
         $spots = Spot::whereBetween('ido', [$swlat, $nelat])
             ->whereBetween('keido', [$swlng, $nelng])
             ->get();
+
+        // 各スポットごとに画像・コメント・スレッドをセット
+        $spots = $spots->map(function ($spot) {
+            $spot->photos = Photo::where('spot_id', $spot->id)->get();
+            $spot->comments = Comment::where('spot_id', $spot->id)->get();
+            $spot->posts = Post::where('spot_id', $spot->id)->get();
+            return $spot;
+        });
+
         return response()->json($spots);
     }
 
