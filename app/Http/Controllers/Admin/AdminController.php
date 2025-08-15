@@ -76,22 +76,41 @@ class AdminController extends Controller
     // 範囲のみのデータを取得（spot,photo,comment,post）
     public function getSpotsInBounds(Request $request)
     {
-        $swlat = $request->input('swlat');
-        $swlng = $request->input('swlng');
-        $nelat = $request->input('nelat');
-        $nelng = $request->input('nelng');
+        $validated = $request->validate([
+            'swlat' => 'required|numeric|between:-90,90',   // 南西(左下)の緯度
+            'swlng' => 'required|numeric|between:-180,180', // 南西(左下)の経度
+            'nelat' => 'required|numeric|between:-90,90',   // 北東(右上)の緯度
+            'nelng' => 'required|numeric|between:-180,180', // 北東(右上)の経度
+            'limit' => 'nullable|integer|min:1|max:2000',
+        ]);
 
-        $spots = Spot::whereBetween('ido', [$swlat, $nelat])
-            ->whereBetween('keido', [$swlng, $nelng])
-            ->get();
+        $limit = $validated['limit'] ?? 500;
 
-        // 各スポットごとに画像・コメント・スレッドをセット
-        $spots = $spots->map(function ($spot) {
-            $spot->photos = Photo::where('spot_id', $spot->id)->get();
-            $spot->comments = Comment::where('spot_id', $spot->id)->get();
-            $spot->posts = Post::where('spot_id', $spot->id)->get();
-            return $spot;
-        });
+        $query = Spot::query()
+            ->whereBetween('ido', [$validated['swlat'], $validated['nelat']]);
+
+        // 経度：日付変更線を跨ぐケースを考慮
+        if ($validated['swlng'] <= $validated['nelng']) {
+            // 通常ケース
+            $query->whereBetween('keido', [$validated['swlng'], $validated['nelng']]);
+        } else {
+            // 例: swlng=170, nelng=-170 のように 180/-180 を跨ぐ場合
+            $query->where(function ($q) use ($validated) {
+                $q->where('keido', '>=', $validated['swlng'])
+                    ->orWhere('keido', '<=', $validated['nelng']);
+            });
+        }
+
+        // 関連データをまとめて取得（必要な列だけに絞ると軽量）
+        $spots = $query
+            ->with([
+                'photos:id,spot_id,photo_path',
+                'comments:id,spot_id,comment',
+                'posts:id,spot_id,author,content'
+            ])
+            ->orderByDesc('id')
+            ->limit($limit)
+            ->get(['id', 'ido', 'keido', 'category', 'spot_name', 'evaluation', 'user_name', 'created_at']); // Spot の列も必要最小限に
 
         return response()->json($spots);
     }

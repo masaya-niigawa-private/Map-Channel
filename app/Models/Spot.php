@@ -7,7 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Spot extends Model
 {
-    use HasFactory;
-    protected $fillable = [];
+    protected $fillable = []; // 必要に応じて追加（修正機能があるので、設定なし）
+
+    public function photos()
+    {
+        return $this->hasMany(Photo::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
 
 }
