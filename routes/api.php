@@ -24,3 +24,6 @@ Route::get('/spots/nearby', [AdminController::class, 'getNearby']);
 
 //表示範囲のデータを取得する
 Route::get('/spots/in-bounds', [AdminController::class, 'getSpotsInBounds']);
+
+//登録
+Route::get('/spots/store', [AdminController::class, 'storeAPI']);

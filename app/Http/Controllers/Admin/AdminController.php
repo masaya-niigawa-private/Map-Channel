@@ -11,10 +11,11 @@ use App\Models\Photo;
 use App\Models\Post;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
-    //スポット登録
+    // スポット登録（web用）
     public function store(Request $request)
     {
         // バリデーションルールを定義
@@ -62,6 +63,90 @@ class AdminController extends Controller
         } catch (\Exception $e) {
             // 例外発生時にエラーメッセージを表示
             return back()->with('error', '登録に失敗しました。' . $e->getMessage());
+        }
+    }
+
+    // スポット登録（API）
+    public function storeAPI(Request $request)
+    {
+        // ---- 1) バリデーション（JSONで422返却） ----
+        $validator = Validator::make($request->all(), [
+            'ido' => ['required'],
+            'keido' => ['required'],
+            'spot_name' => ['required'],
+            'evaluation' => ['required'],
+            // 必要に応じて強化してください（例：numeric/between, image mimes など）
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        // ---- 2) 登録（例外時は500をJSONで返却） ----
+        try {
+            DB::beginTransaction();
+
+            $spot = new Spot();
+            $spot->ido = $request->input('ido');
+            $spot->keido = $request->input('keido');
+            $spot->category = $request->input('category');
+            $spot->spot_name = $request->input('spot_name');
+            $spot->evaluation = $request->input('evaluation');
+            $spot->user_name = $request->input('user_name');
+            $spot->save();
+
+            // 写真：単数/複数どちらでも対応
+            if ($request->hasFile('photo')) {
+                $files = Arr::wrap($request->file('photo'));
+                foreach ($files as $file) {
+                    if (!$file)
+                        continue;
+                    $photo = new Photo();
+                    $photo->spot_id = $spot->id;
+                    // S3にアップロード（元処理を踏襲）
+                    $path = $file->store('photo', 's3');
+                    $photo->photo_path = $path;
+                    $photo->save();
+                }
+            }
+
+            // コメント（任意）
+            $commentInput = $request->input('comment');
+            if (!empty($commentInput)) {
+                $comment = new Comment();
+                $comment->spot_id = $spot->id;
+                $comment->comment = $commentInput;
+                $comment->save();
+            }
+
+            DB::commit();
+
+            // 必要最低限のレスポンス（SwiftUIで扱いやすい形に）
+            $response = [
+                'id' => $spot->id,
+                'spot_name' => $spot->spot_name,
+                'category' => $spot->category,
+                'ido' => $spot->ido,
+                'keido' => $spot->keido,
+                'evaluation' => $spot->evaluation,
+                'user_name' => $spot->user_name,
+                'message' => '正常に登録されました。',
+            ];
+
+            // Locationヘッダー（必要なら）
+            return response()
+                ->json($response, 201)
+                ->header('Location', url("/api/spots/{$spot->id}"));
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '登録に失敗しました。',
+                'error' => $e->getMessage(), // 運用で外すならここは消してください
+            ], 500);
         }
     }
 
