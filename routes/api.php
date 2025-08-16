@@ -26,4 +26,4 @@ Route::get('/spots/nearby', [AdminController::class, 'getNearby']);
 Route::get('/spots/in-bounds', [AdminController::class, 'getSpotsInBounds']);
 
 //登録
-Route::get('/spots/store', [AdminController::class, 'storeAPI']);
+Route::post('/spots/store', [AdminController::class, 'storeAPI']);
