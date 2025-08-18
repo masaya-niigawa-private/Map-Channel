@@ -288,66 +288,86 @@ class AdminController extends Controller
     }
 
     // 更新機能（API）
-    public function updateAPI(Request $request, int $id): JsonResponse
+    public function updateAPI(Request $request, $id)
     {
-        // 422をJSONで返したいので Validator を使用（PATCH想定で"sometimes"）
-        $validator = Validator::make($request->all(), [
+        $v = Validator::make($request->all(), [
+            // テキスト（存在したときだけ検証）
             'spot_name' => ['sometimes', 'string', 'max:255'],
-            'evaluation' => ['sometimes', 'string', 'max:255'],
-            'user_name' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'name' => ['sometimes', 'string', 'max:255'], // 別名（互換）
+            'evaluation' => ['sometimes'],                    // "1"〜"5"（文字列も許容）
+            'rating' => ['sometimes'],
+            'user_name' => ['sometimes', 'string', 'max:255'],
             'created_at' => ['sometimes', 'date'],
-            'comment' => ['sometimes', 'nullable', 'string', 'max:1000'],
+
+            // 画像
+            'photo' => ['sometimes'],            // 単数 or 複数
+            'photo.*' => ['sometimes', 'image', 'max:10240'], // 10MB
+
+            // 既存写真の削除ID
+            'delete_photo_ids' => ['sometimes', 'array'],
+            'delete_photo_ids.*' => ['integer'],
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation error',
-                'errors' => $validator->errors(),
-            ], 422);
+        if ($v->fails()) {
+            return response()->json(['message' => 'validation_error', 'errors' => $v->errors()], 422);
         }
 
-        $data = $validator->validated();
-
-        // Spot取得
         $spot = Spot::find($id);
         if (!$spot) {
-            return response()->json([
-                'message' => 'Spot not found',
-            ], 404);
+            return response()->json(['message' => 'not_found'], 404);
         }
 
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
+            // ------- テキスト部分（明示代入で安全に） -------
+            if ($request->has('spot_name') || $request->has('name')) {
+                $spot->spot_name = $request->input('spot_name', $request->input('name'));
+            }
+            if ($request->has('evaluation') || $request->has('rating')) {
+                $spot->evaluation = (string) $request->input('evaluation', $request->input('rating'));
+            }
+            if ($request->has('user_name')) {
+                $spot->user_name = $request->input('user_name');
+            }
+            if ($request->has('created_at')) {
+                $spot->created_at = $request->input('created_at');
+            }
+            $spot->save();
 
-            // Spotの部分更新（渡ってきたキーのみ）
-            $spotFill = Arr::only($data, [
-                'spot_name',
-                'evaluation',
-                'user_name',
-                'created_at',
-            ]);
-            if (!empty($spotFill)) {
-                $spot->fill($spotFill);
-                $spot->save();
+            // ------- 既存写真の削除 -------
+            $deleteIDs = array_filter(array_map('intval', (array) $request->input('delete_photo_ids', [])));
+            if (!empty($deleteIDs)) {
+                $photos = Photo::where('spot_id', $spot->id)->whereIn('id', $deleteIDs)->get();
+                foreach ($photos as $p) {
+                    // S3 から削除（photo_path は "photo/<filename>"）
+                    if ($p->photo_path && Storage::disk('s3')->exists($p->photo_path)) {
+                        Storage::disk('s3')->delete($p->photo_path);
+                    }
+                    $p->delete();
+                }
             }
 
-            // コメントが来ていれば upsert
-            $commentResource = null;
-            if (array_key_exists('comment', $data)) {
-                $comment = Comment::firstOrNew(['spot_id' => $spot->id]);
-                $comment->comment = $data['comment']; // nullも許容（空にしたいケース）
-                $comment->save();
-                $commentResource = [
-                    'id' => $comment->id,
-                    'spot_id' => $comment->spot_id,
-                    'comment' => $comment->comment,
-                    'updated_at' => $comment->updated_at,
-                ];
+            // ------- 新規写真の追加（単数/複数） -------
+            if ($request->hasFile('photo')) {
+                foreach (Arr::wrap($request->file('photo')) as $file) {
+                    if (!$file || !$file->isValid())
+                        continue;
+
+                    // S3 に "photo/<filename>" で保存 -> 返り値も "photo/xxx" になる
+                    $path = $file->store('photo', 's3');
+
+                    Photo::create([
+                        'spot_id' => $spot->id,
+                        'photo_path' => $path,   // 例: "photo/20250818_xxx.jpg"
+                    ]);
+                }
             }
 
             DB::commit();
 
-            // 必要十分なJSONを返す（肥大化防止）
+            // 返却はDB確定値で
+            $spot->load('photos:id,spot_id,photo_path');
+
             return response()->json([
                 'message' => 'updated',
                 'spot' => [
@@ -358,15 +378,14 @@ class AdminController extends Controller
                     'created_at' => $spot->created_at,
                     'updated_at' => $spot->updated_at,
                 ],
-                'comment' => $commentResource, // null の可能性あり
+                'photos' => $spot->photos, // photo_path は "photo/<filename>"
+                'comment' => null,
             ], 200);
 
         } catch (\Throwable $e) {
             DB::rollBack();
-            return response()->json([
-                'message' => 'Update failed',
-                'error' => $e->getMessage(), // 本番で不要なら除去
-            ], 500);
+            report($e);
+            return response()->json(['message' => 'error'], 500);
         }
     }
 
