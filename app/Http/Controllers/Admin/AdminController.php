@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Arr;
+use Illuminate\Http\JsonResponse;
 
 class AdminController extends Controller
 {
@@ -330,6 +331,36 @@ class AdminController extends Controller
         ]);
 
         return redirect()->back()->with('message', '投稿されました。');
+    }
+
+    public function storePostAPI(Request $request): JsonResponse
+    {
+        // コントローラ内でバリデーション（FormRequestは使わない）
+        $validated = $request->validate([
+            'spot_id' => ['required', 'integer', 'exists:spots,id'],
+            'author' => ['nullable', 'string', 'max:255'],
+            'content' => ['required', 'string', 'max:1000'],
+        ]);
+
+        // 作成（Resourceは使わず手動でJSON整形）
+        $post = Post::create([
+            'spot_id' => (int) $validated['spot_id'],
+            'author' => $validated['author'] ?? null,
+            'content' => $validated['content'],
+        ]);
+
+        // 一貫したJSONレスポンス（201 Created）
+        return response()->json([
+            'message' => 'Created',
+            'data' => [
+                'id' => $post->id,
+                'spot_id' => $post->spot_id,
+                'author' => $post->author,
+                'content' => $post->content,
+                'created_at' => optional($post->created_at)->toIso8601String(),
+                'updated_at' => optional($post->updated_at)->toIso8601String(),
+            ],
+        ], 201);
     }
 
     public function getNearby(Request $request)
