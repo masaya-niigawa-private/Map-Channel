@@ -287,6 +287,89 @@ class AdminController extends Controller
 
     }
 
+    // 更新機能（API）
+    public function updateAPI(Request $request, int $id): JsonResponse
+    {
+        // 422をJSONで返したいので Validator を使用（PATCH想定で"sometimes"）
+        $validator = Validator::make($request->all(), [
+            'spot_name' => ['sometimes', 'string', 'max:255'],
+            'evaluation' => ['sometimes', 'string', 'max:255'],
+            'user_name' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'created_at' => ['sometimes', 'date'],
+            'comment' => ['sometimes', 'nullable', 'string', 'max:1000'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $data = $validator->validated();
+
+        // Spot取得
+        $spot = Spot::find($id);
+        if (!$spot) {
+            return response()->json([
+                'message' => 'Spot not found',
+            ], 404);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // Spotの部分更新（渡ってきたキーのみ）
+            $spotFill = Arr::only($data, [
+                'spot_name',
+                'evaluation',
+                'user_name',
+                'created_at',
+            ]);
+            if (!empty($spotFill)) {
+                $spot->fill($spotFill);
+                $spot->save();
+            }
+
+            // コメントが来ていれば upsert
+            $commentResource = null;
+            if (array_key_exists('comment', $data)) {
+                $comment = Comment::firstOrNew(['spot_id' => $spot->id]);
+                $comment->comment = $data['comment']; // nullも許容（空にしたいケース）
+                $comment->save();
+                $commentResource = [
+                    'id' => $comment->id,
+                    'spot_id' => $comment->spot_id,
+                    'comment' => $comment->comment,
+                    'updated_at' => $comment->updated_at,
+                ];
+            }
+
+            DB::commit();
+
+            // 必要十分なJSONを返す（肥大化防止）
+            return response()->json([
+                'message' => 'updated',
+                'spot' => [
+                    'id' => $spot->id,
+                    'spot_name' => $spot->spot_name,
+                    'evaluation' => $spot->evaluation,
+                    'user_name' => $spot->user_name,
+                    'created_at' => $spot->created_at,
+                    'updated_at' => $spot->updated_at,
+                ],
+                'comment' => $commentResource, // null の可能性あり
+            ], 200);
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Update failed',
+                'error' => $e->getMessage(), // 本番で不要なら除去
+            ], 500);
+        }
+    }
+
     public function deletePhoto($id)
     {
         try {

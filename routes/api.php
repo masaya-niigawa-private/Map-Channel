@@ -30,3 +30,6 @@ Route::post('/spots/store', [AdminController::class, 'storeAPI']);
 
 // コメント登録
 Route::post('/posts/store', [AdminController::class, 'storePostAPI']);
+
+// 更新
+Route::patch('/spots/update/{id}', [AdminController::class, 'updateAPI']);
