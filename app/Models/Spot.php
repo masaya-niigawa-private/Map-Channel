@@ -7,8 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Spot extends Model
 {
-    protected $fillable = []; // 必要に応じて追加（修正機能があるので、設定なし）
-
+    protected $fillable = [
+        'spot_name',
+        'evaluation',
+        'user_name',
+        'photo_path',
+    ];
     public function photos()
     {
         return $this->hasMany(Photo::class);
