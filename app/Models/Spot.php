@@ -9,9 +9,7 @@ class Spot extends Model
 {
     protected $fillable = [
         'spot_name',
-        'evaluation',
-        'user_name',
-        'photo_path',
+        'evaluation'
     ];
     public function photos()
     {

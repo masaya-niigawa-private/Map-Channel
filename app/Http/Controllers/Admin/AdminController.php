@@ -299,11 +299,11 @@ class AdminController extends Controller
             'user_name' => ['sometimes', 'string', 'max:255'],
             'created_at' => ['sometimes', 'date'],
 
-            // 画像
-            'photo' => ['sometimes'],            // 単数 or 複数
-            'photo.*' => ['sometimes', 'file', 'mimes:jpeg,jpg,png,webp,heic,heif', 'max:10240'], // 10MB
+            // ▼ 画像（配列）＋ HEIC/HEIF を許可
+            'photo' => ['sometimes', 'array'],
+            'photo.*' => ['file', 'mimetypes:image/heic,image/heif,image/heic-sequence,image/heif-sequence,image/jpeg,image/png,image/webp', 'max:20480'],
 
-            // 既存写真の削除ID
+            // ▼ 既存写真の削除ID（配列）
             'delete_photo_ids' => ['sometimes', 'array'],
             'delete_photo_ids.*' => ['integer'],
         ]);
