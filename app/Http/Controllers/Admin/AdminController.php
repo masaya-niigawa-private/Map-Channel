@@ -301,7 +301,7 @@ class AdminController extends Controller
 
             // 画像
             'photo' => ['sometimes'],            // 単数 or 複数
-            'photo.*' => ['sometimes', 'image', 'max:10240'], // 10MB
+            'photo.*' => ['sometimes', 'file', 'mimes:jpeg,jpg,png,webp,heic,heif', 'max:10240'], // 10MB
 
             // 既存写真の削除ID
             'delete_photo_ids' => ['sometimes', 'array'],
