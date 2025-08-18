@@ -32,4 +32,4 @@ Route::post('/spots/store', [AdminController::class, 'storeAPI']);
 Route::post('/posts/store', [AdminController::class, 'storePostAPI']);
 
 // 更新
-Route::patch('/spots/update/{id}', [AdminController::class, 'updateAPI']);
+Route::match(['POST', 'PATCH'], '/spots/update/{id}', [AdminController::class, 'updateAPI']);
