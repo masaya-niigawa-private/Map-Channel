@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Arr;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AdminController extends Controller
 {
@@ -486,4 +488,129 @@ class AdminController extends Controller
         );
         return response()->json($spots);
     }
+
+    public function destroyAPI(int $id)
+    {
+        try {
+            DB::transaction(function () use ($id) {
+                // 親スポット取得
+                $spot = Spot::findOrFail($id);
+
+                // ストレージ上の削除対象ファイルキー収集
+                $paths = [];
+
+                // 親テーブル(spots) に photo_path 等があれば回収
+                if (Schema::hasTable('spots') && Schema::hasColumn('spots', 'photo_path')) {
+                    if (!empty($spot->photo_path ?? null)) {
+                        $paths[] = $this->normalizeToDiskKey($spot->photo_path);
+                    }
+                }
+
+                // 子テーブルから添付系のカラムを探索しパスを回収
+                // photos: 画像テーブル想定（photo_path / path / image_path / image_url / url）
+                $paths = array_merge($paths, $this->collectPaths('photos', $id, [
+                    'photo_path',
+                    'path',
+                    'image_path',
+                    'image_url',
+                    'url',
+                ]));
+
+                // posts: 投稿（画像添付がある場合を想定）
+                $paths = array_merge($paths, $this->collectPaths('posts', $id, [
+                    'photo_path',
+                    'path',
+                    'image_path',
+                    'image_url',
+                    'url',
+                    'attachment_path',
+                    'file_path',
+                ]));
+
+                // coments: コメント（スペルは指定どおり "coments"）
+                $paths = array_merge($paths, $this->collectPaths('coments', $id, [
+                    'photo_path',
+                    'path',
+                    'image_path',
+                    'image_url',
+                    'url',
+                    'attachment_path',
+                    'file_path',
+                ]));
+
+                // 重複除去 & 空要素除去
+                $paths = array_values(array_unique(array_filter($paths)));
+
+                // 先にストレージの実ファイルを削除（DB側はこの後CASCADEで落ちる）
+                if (!empty($paths)) {
+                    $disk = config('filesystems.default'); // 例: 's3' / 'public' など
+                    Storage::disk($disk)->delete($paths);
+                }
+
+                // 親レコード削除（外部キー ON DELETE CASCADE により子も削除）
+                $spot->delete();
+            });
+
+            return response()->json([
+                'message' => 'Spot deleted successfully.',
+                'deleted_id' => $id,
+            ], 200);
+
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Spot not found.'], 404);
+        } catch (\Throwable $e) {
+            report($e);
+            return response()->json(['message' => 'Failed to delete spot.'], 500);
+        }
+    }
+
+    /**
+     * 指定テーブルに対し、与えた候補カラムのうち存在する列をpluckして
+     * ストレージキーへ正規化した配列を返す。テーブル/列が無くても安全に無視。
+     */
+    private function collectPaths(string $table, int $spotId, array $candidateColumns): array
+    {
+        if (!Schema::hasTable($table) || !Schema::hasColumn($table, 'spot_id')) {
+            return [];
+        }
+
+        $acc = [];
+        foreach ($candidateColumns as $col) {
+            if (Schema::hasColumn($table, $col)) {
+                $vals = DB::table($table)
+                    ->where('spot_id', $spotId)
+                    ->pluck($col)
+                    ->filter()
+                    ->all();
+
+                foreach ($vals as $v) {
+                    $acc[] = $this->normalizeToDiskKey((string) $v);
+                }
+            }
+        }
+        // 重複/空を除去
+        return array_values(array_unique(array_filter($acc)));
+    }
+
+    /**
+     * URL/相対パス混在に対応して、Storage::disk(...)->delete で使えるキーへ正規化
+     * 例) https://.../bucket/folder/file.heic -> folder/file.heic
+     *     storage/app/public/images/a.jpg     -> images/a.jpg（運用に合わせて格納）
+     */
+    private function normalizeToDiskKey(string $path): string
+    {
+        $path = trim($path);
+
+        // すでに相対パスっぽければそのまま
+        if (!preg_match('#^https?://#i', $path)) {
+            return ltrim($path, '/');
+        }
+
+        // URL ならパス部分のみ取得
+        $parts = parse_url($path);
+        $key = $parts['path'] ?? '';
+        return ltrim((string) $key, '/');
+    }
+
+
 }

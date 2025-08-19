@@ -33,3 +33,6 @@ Route::post('/posts/store', [AdminController::class, 'storePostAPI']);
 
 // 更新
 Route::match(['POST', 'PATCH'], '/spots/update/{id}', [AdminController::class, 'updateAPI']);
+
+// 削除
+Route::delete('/spots/{id}', [AdminController::class, 'destroyAPI']);
