@@ -93,16 +93,34 @@ class AdminController extends Controller
         try {
             DB::beginTransaction();
 
+            // ★ 追加：ido/keido を「そのまま保存」できるよう正規化
+            $normalizeCoord = function ($v) {
+                // マルチパートで同名が複数来た場合などの配列 → 先頭
+                if (is_array($v)) {
+                    $v = reset($v);
+                }
+                // 文字列化 & 余白除去
+                $s = trim((string) $v);
+                // 全角数字→半角、全角小数点→半角、読点等の混入を除去
+                $s = mb_convert_kana($s, 'n', 'UTF-8');      // 数字を半角に
+                $s = str_replace(['，', '．', '、'], ['.', '.', ''], $s);
+                // 先頭に現れる数値（-?d(.d)?）だけを安全に抽出（空ならそのまま返す）
+                if (preg_match('/-?\d+(?:\.\d+)?/', $s, $m)) {
+                    return $m[0]; // 文字列として返す（DBがvarcharでも安全）
+                }
+                return $s;
+            };
+
             $spot = new Spot();
-            $spot->ido = $request->input('ido');
-            $spot->keido = $request->input('keido');
+            $spot->ido = $normalizeCoord($request->input('ido'));
+            $spot->keido = $normalizeCoord($request->input('keido'));
             $spot->category = $request->input('category');
             $spot->spot_name = $request->input('spot_name');
             $spot->evaluation = $request->input('evaluation');
             $spot->user_name = $request->input('user_name');
             $spot->save();
 
-            // 写真：単数/複数どちらでも対応
+            // 写真：単数/複数どちらでも対応（既存ロジックそのまま）
             if ($request->hasFile('photo')) {
                 $files = Arr::wrap($request->file('photo'));
                 foreach ($files as $file) {
@@ -110,14 +128,13 @@ class AdminController extends Controller
                         continue;
                     $photo = new Photo();
                     $photo->spot_id = $spot->id;
-                    // S3にアップロード（元処理を踏襲）
-                    $path = $file->store('photo', 's3');
+                    $path = $file->store('photo', 's3'); // S3アップロード
                     $photo->photo_path = $path;
                     $photo->save();
                 }
             }
 
-            // コメント（任意）
+            // コメント（任意）（既存ロジックそのまま）
             $commentInput = $request->input('comment');
             if (!empty($commentInput)) {
                 $comment = new Comment();
@@ -128,7 +145,7 @@ class AdminController extends Controller
 
             DB::commit();
 
-            // 必要最低限のレスポンス（SwiftUIで扱いやすい形に）
+            // 必要最低限のレスポンス（既存ロジックそのまま）
             $response = [
                 'id' => $spot->id,
                 'spot_name' => $spot->spot_name,
@@ -140,7 +157,6 @@ class AdminController extends Controller
                 'message' => '正常に登録されました。',
             ];
 
-            // Locationヘッダー（必要なら）
             return response()
                 ->json($response, 201)
                 ->header('Location', url("/api/spots/{$spot->id}"));
@@ -153,6 +169,7 @@ class AdminController extends Controller
             ], 500);
         }
     }
+
 
     //spotテーブルから全データ取得
     public function get()
