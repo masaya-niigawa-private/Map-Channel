@@ -36,3 +36,6 @@ Route::match(['POST', 'PATCH'], '/spots/update/{id}', [AdminController::class, '
 
 // 削除
 Route::delete('/spots/{id}', [AdminController::class, 'destroyAPI']);
+
+// usersテーブル作成（※Firebaseユーザー登録正常終了時）
+Route::post('/storeUser', [AdminController::class, 'storeUserAPI']);

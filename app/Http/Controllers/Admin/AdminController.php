@@ -9,6 +9,7 @@ use App\Models\Comment;
 use App\Models\Opinion;
 use App\Models\Photo;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -629,5 +630,64 @@ class AdminController extends Controller
         return ltrim((string) $key, '/');
     }
 
+    public function storeUserAPI(Request $request): JsonResponse
+    {
+        // 1) 入力チェック（uid/email を最小に）
+        $validated = $request->validate([
+            'uid' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'userName' => ['sometimes', 'nullable', 'string', 'max:255'], // あれば保存
+        ]);
+
+        $uid = $validated['uid'];
+        $email = $validated['email'];
+        $name = $validated['userName'] ?? null;
+
+        // 2) すでに同じ uid があるか（冪等性のためのチェック）
+        //    - 同じ email なら 200（OK）を返却
+        //    - 異なる email が紐づいていたら 409（Conflict）
+        if ($existing = User::find($uid)) {
+            if (strcasecmp((string) $existing->email, (string) $email) === 0) {
+                return response()
+                    ->json([
+                        'message' => 'ok',
+                        'data' => [
+                            'uid' => $existing->uid,
+                            'email' => $existing->email,
+                            'userName' => $existing->userName,
+                            'created_at' => $existing->created_at,
+                        ],
+                    ], 200)
+                    ->header('Location', url("/api/users/{$existing->uid}"));
+            }
+
+            return response()->json([
+                'message' => 'conflict',
+                'errors' => ['email' => ['uid already exists with a different email.']],
+            ], 409);
+        }
+
+        // 3) 新規作成（INSERT）
+        $user = new User();
+        $user->uid = $uid;
+        $user->email = $email;
+        if ($name !== null) {
+            $user->userName = $name; // カラムが userName の場合
+        }
+        $user->save();
+
+        // 4) 201 Created を返却（Location ヘッダ付き）
+        return response()
+            ->json([
+                'message' => 'created',
+                'data' => [
+                    'uid' => $user->uid,
+                    'email' => $user->email,
+                    'userName' => $user->userName,
+                    'created_at' => $user->created_at,
+                ],
+            ], 201)
+            ->header('Location', url("/api/users/{$user->uid}"));
+    }
 
 }
