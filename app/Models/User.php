@@ -2,20 +2,59 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable; // 認可/Policyで扱いやすいようにAuthenticatableを継承
+// use Illuminate\Notifications\Notifiable; // 通知を使うなら有効化
 
-class User extends Model
+class User extends Authenticatable
 {
-    protected $table = 'users';
+    use HasFactory; //, Notifiable;
 
-    // 主キーは uid（文字列）
-    protected $primaryKey = 'uid';
-    public $incrementing = false;
-    protected $keyType = 'string';
+    /**
+     * テーブルカラム
+     * - id (PK)
+     * - uid (UNIQUE, Firebase UID)
+     * - userName (表示名)
+     * - email (UNIQUE)
+     * - timestamps
+     */
+    protected $fillable = [
+        'uid',
+        'userName',
+        'email',
+    ];
 
-    // created_at だけ使う（updated_at は無し）
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = null;
+    protected $hidden = [
+        // APIで隠したい属性があればここに（例: 'remember_token' など）
+    ];
 
-    protected $fillable = ['uid', 'userName', 'email'];
+    protected $casts = [
+        // 必要に応じて追加
+    ];
+
+    /* ===== リレーション ===== */
+
+    // users(1) ──< boards.author_id
+    public function boards()
+    {
+        return $this->hasMany(Board::class, 'author_id');
+    }
+
+    // users(1) ──< board_comments.author_id
+    public function boardComments()
+    {
+        return $this->hasMany(BoardComment::class, 'author_id');
+    }
+
+    // users(1) ──< board_favorites.user_id
+    public function boardFavorites()
+    {
+        return $this->hasMany(BoardFavorite::class, 'user_id');
+    }
+
+    // users(1) ──< board_reports.reporter_id
+    public function boardReports()
+    {
+        return $this->hasMany(BoardReport::class, 'reporter_id');
+    }
 }
