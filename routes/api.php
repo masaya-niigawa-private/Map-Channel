@@ -16,6 +16,9 @@ use App\Http\Controllers\Api\V1\BoardsApiController as C;
 |
 */
 
+// 一時的に追記
+Route::get('/__ping', fn() => response()->json(['ok'=>true]));
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
