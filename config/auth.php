@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'firebase' => [
+            'driver' => 'firebase',
+            'provider' => 'users',
+        ],
     ],
 
     /*
