@@ -66,3 +66,14 @@ Route::prefix('v1')->group(function () {
         Route::post('/boards/{id}/report', [C::class, 'reportStore']);       // 通報
     });
 });
+
+// -----------------------------知恵袋------------------------------------
+Route::prefix('v1')->group(function () {
+    // 一覧・詳細（公開）
+    Route::get('/questions', [QuestionsController::class, 'index']);
+    Route::get('/questions/{id}', [QuestionsController::class, 'show']);
+
+    // 作成系（認証は後でミドルウェアを噛ませる）
+    Route::post('/questions', [QuestionsController::class, 'store']);
+    Route::post('/questions/{id}/answers', [AnswersController::class, 'store']);
+});
