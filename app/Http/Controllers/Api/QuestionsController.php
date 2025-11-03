@@ -13,49 +13,60 @@ final class QuestionsController extends Controller
 {
   // GET /api/v1/questions?q=&tag=&sort=new|score|solved&per_page=20
   public function index(Request $req)
-  {
-    $q = trim((string) $req->query('q', ''));
-    $tag = trim((string) $req->query('tag', ''));
-    $sort = (string) $req->query('sort', 'new');  // new|score|solved
+　{
+    $q       = trim((string) $req->query('q', ''));
+    $tag     = trim((string) $req->query('tag', ''));
+    $sort    = (string) $req->query('sort', 'new');  // new|score|solved
     $perPage = min(max((int) $req->query('per_page', 20), 1), 100);
+    $cursor  = $req->query('cursor');               // null可（そのまま渡す）
 
     $query = Question::query()
-      ->where('status', 'published')                  // ② 公開条件
-      ->with(['tags:id,name'])                        // ⑥ N+1回避
-      ->withCount(['answers'])                        // ⑥ N+1回避
-      ->when($q !== '', function ($qq) use ($q) {      // ⑤ LIKE検索
-        $qq->where(function ($w) use ($q) {
-          $w->where('title', 'like', "%{$q}%")
-            ->orWhere('body', 'like', "%{$q}%");
+        ->where('status', 'published')          // ② 公開条件
+        ->with(['tags:id,name'])                // ⑥ N+1回避
+        ->withCount(['answers'])                // ⑥ N+1回避
+        ->when($q !== '', function ($qq) use ($q) { // ⑤ LIKE検索
+            $qq->where(function ($w) use ($q) {
+                $w->where('title', 'like', "%{$q}%")
+                  ->orWhere('body', 'like', "%{$q}%");
+            });
+        })
+        ->when($tag !== '', function ($qq) use ($tag) {
+            $qq->whereHas('tags', fn($t) => $t->where('name', $tag));
         });
-      })
-      ->when($tag !== '', function ($qq) use ($tag) {
-        $qq->whereHas('tags', fn($t) => $t->where('name', $tag));
-      });
 
-    // ⑤ 暫定sortルール
+    // ⑤ 暫定sortルール（cursor用に必ず tie-breaker: id desc を追加）
     if ($sort === 'solved') {
-      $query->orderByDesc('is_resolved')->orderByDesc('created_at');
+        $query->orderByDesc('is_resolved')
+              ->orderByDesc('created_at')
+              ->orderByDesc('id');
     } elseif ($sort === 'score') {
-      $query->orderByDesc('answers_count')->orderByDesc('views_count');
-    } else {
-      $query->orderByDesc('created_at'); // new
+        $query->orderByDesc('answers_count')
+              ->orderByDesc('views_count')
+              ->orderByDesc('id');
+    } else { // new
+        $query->orderByDesc('created_at')
+              ->orderByDesc('id');
     }
 
-    $paginator = $query->cursorPaginate($perPage)->withQueryString(); // ④ ページング＝cursorPaginate
+    // cursorPaginate（※ withQueryStringは不要。links/metaは使わないため）
+    $paginator = $query->cursorPaginate($perPage, ['*'], 'cursor', $cursor);
 
-    // ④ JSONレイアウト: data + meta（next_cursor/prev_cursor付き）
-    return QuestionResource::collection($paginator)->additional([
-      'meta' => [
-        'q' => $q,
-        'tag' => $tag,
-        'sort' => $sort,
-        'per_page' => $perPage,
-        'next_cursor' => optional($paginator->nextCursor())->encode(),
-        'prev_cursor' => optional($paginator->previousCursor())->encode(),
-      ]
+    // ✅ Resourceに“paginator本体”は渡さない。itemsのみを整形して配列化
+    $data = QuestionResource::collection(collect($paginator->items()))->resolve();
+
+    // ✅ 手組みJSON：links/metaの自動付与を避け、クライアント仕様に揃える
+    return response()->json([
+        'data' => $data,
+        'meta' => [
+            'q'           => $q ?: null,
+            'tag'         => $tag ?: null,
+            'sort'        => $sort,
+            'per_page'    => $perPage,                               // 数値
+            'next_cursor' => $paginator->nextCursor()?->encode(),    // 文字列 or null
+            'prev_cursor' => $paginator->previousCursor()?->encode(),// 文字列 or null（必要なければ削除可）
+        ],
     ]);
-  }
+　}
 
   // GET /api/v1/questions/{id}
   public function show($id)
