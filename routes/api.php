@@ -4,6 +4,8 @@ use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\BoardsApiController as C;
+use App\Http\Controllers\Api\QuestionsController;
+use App\Http\Controllers\Api\AnswersController;
 
 /*
 |--------------------------------------------------------------------------
