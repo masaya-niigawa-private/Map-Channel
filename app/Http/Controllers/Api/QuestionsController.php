@@ -13,7 +13,7 @@ final class QuestionsController extends Controller
 {
   // GET /api/v1/questions?q=&tag=&sort=new|score|solved&per_page=20
   public function index(Request $req)
-　{
+  {
     $q       = trim((string) $req->query('q', ''));
     $tag     = trim((string) $req->query('tag', ''));
     $sort    = (string) $req->query('sort', 'new');  // new|score|solved
@@ -66,7 +66,7 @@ final class QuestionsController extends Controller
             'prev_cursor' => $paginator->previousCursor()?->encode(),// 文字列 or null（必要なければ削除可）
         ],
     ]);
-　}
+  }
 
   // GET /api/v1/questions/{id}
   public function show($id)
