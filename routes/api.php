@@ -78,4 +78,6 @@ Route::prefix('v1')->group(function () {
     // 作成系（認証は後でミドルウェアを噛ませる）
     Route::post('/questions', [QuestionsController::class, 'store']);
     Route::post('/questions/{id}/answers', [AnswersController::class, 'store']);
+
+    Route::put('/questions/{id}', [QuestionsController::class, 'update']);
 });

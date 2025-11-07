@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\QuestionStoreRequest;
+use App\Http\Requests\QuestionUpdateRequest;
 use App\Http\Resources\QuestionResource;
 use App\Models\Question;
 use App\Models\Tag;
@@ -14,38 +15,38 @@ final class QuestionsController extends Controller
   // GET /api/v1/questions?q=&tag=&sort=new|score|solved&per_page=20
   public function index(Request $req)
   {
-    $q       = trim((string) $req->query('q', ''));
-    $tag     = trim((string) $req->query('tag', ''));
-    $sort    = (string) $req->query('sort', 'new');  // new|score|solved
+    $q = trim((string) $req->query('q', ''));
+    $tag = trim((string) $req->query('tag', ''));
+    $sort = (string) $req->query('sort', 'new');  // new|score|solved
     $perPage = min(max((int) $req->query('per_page', 20), 1), 100);
-    $cursor  = $req->query('cursor');               // null可（そのまま渡す）
+    $cursor = $req->query('cursor');               // null可（そのまま渡す）
 
     $query = Question::query()
-        ->where('status', 'published')          // ② 公開条件
-        ->with(['tags:id,name'])                // ⑥ N+1回避
-        ->withCount(['answers'])                // ⑥ N+1回避
-        ->when($q !== '', function ($qq) use ($q) { // ⑤ LIKE検索
-            $qq->where(function ($w) use ($q) {
-                $w->where('title', 'like', "%{$q}%")
-                  ->orWhere('body', 'like', "%{$q}%");
-            });
-        })
-        ->when($tag !== '', function ($qq) use ($tag) {
-            $qq->whereHas('tags', fn($t) => $t->where('name', $tag));
+      ->where('status', 'published')          // ② 公開条件
+      ->with(['tags:id,name'])                // ⑥ N+1回避
+      ->withCount(['answers'])                // ⑥ N+1回避
+      ->when($q !== '', function ($qq) use ($q) { // ⑤ LIKE検索
+        $qq->where(function ($w) use ($q) {
+          $w->where('title', 'like', "%{$q}%")
+            ->orWhere('body', 'like', "%{$q}%");
         });
+      })
+      ->when($tag !== '', function ($qq) use ($tag) {
+        $qq->whereHas('tags', fn($t) => $t->where('name', $tag));
+      });
 
     // ⑤ 暫定sortルール（cursor用に必ず tie-breaker: id desc を追加）
     if ($sort === 'solved') {
-        $query->orderByDesc('is_resolved')
-              ->orderByDesc('created_at')
-              ->orderByDesc('id');
+      $query->orderByDesc('is_resolved')
+        ->orderByDesc('created_at')
+        ->orderByDesc('id');
     } elseif ($sort === 'score') {
-        $query->orderByDesc('answers_count')
-              ->orderByDesc('views_count')
-              ->orderByDesc('id');
+      $query->orderByDesc('answers_count')
+        ->orderByDesc('views_count')
+        ->orderByDesc('id');
     } else { // new
-        $query->orderByDesc('created_at')
-              ->orderByDesc('id');
+      $query->orderByDesc('created_at')
+        ->orderByDesc('id');
     }
 
     // cursorPaginate（※ withQueryStringは不要。links/metaは使わないため）
@@ -56,15 +57,15 @@ final class QuestionsController extends Controller
 
     // ✅ 手組みJSON：links/metaの自動付与を避け、クライアント仕様に揃える
     return response()->json([
-        'data' => $data,
-        'meta' => [
-            'q'           => $q ?: null,
-            'tag'         => $tag ?: null,
-            'sort'        => $sort,
-            'per_page'    => $perPage,                               // 数値
-            'next_cursor' => $paginator->nextCursor()?->encode(),    // 文字列 or null
-            'prev_cursor' => $paginator->previousCursor()?->encode(),// 文字列 or null（必要なければ削除可）
-        ],
+      'data' => $data,
+      'meta' => [
+        'q' => $q ?: null,
+        'tag' => $tag ?: null,
+        'sort' => $sort,
+        'per_page' => $perPage,                               // 数値
+        'next_cursor' => $paginator->nextCursor()?->encode(),    // 文字列 or null
+        'prev_cursor' => $paginator->previousCursor()?->encode(),// 文字列 or null（必要なければ削除可）
+      ],
     ]);
   }
 
@@ -139,5 +140,48 @@ final class QuestionsController extends Controller
     return (new QuestionResource($q->load('tags:id,name')))
       ->response()
       ->setStatusCode(201);
+  }
+
+  public function update(QuestionUpdateRequest $request, int $id)
+  {
+    $q = Question::query()->whereKey($id)->firstOrFail();
+
+    // 本来はポリシー等で権限チェック（認証導入後）
+    // $this->authorize('update', $q);
+
+    // 部分更新：来たものだけ反映
+    $input = $request->only(['title', 'body', 'status']);
+    foreach ($input as $k => $v) {
+      if (!is_null($v)) {
+        $q->{$k} = $v;
+      }
+    }
+    $q->save();
+
+    // タグ同期（nullなら何もしない、空配列なら全解除）
+    if ($request->has('tags')) {
+      $names = collect($request->input('tags') ?? [])
+        ->filter(fn($t) => filled($t))
+        ->map(fn($t) => mb_strtolower(trim($t)))
+        ->unique()
+        ->take(5)
+        ->values()
+        ->all();
+
+      if (count($names) === 0) {
+        $q->tags()->sync([]); // 全解除
+      } else {
+        // 既存タグ取得＋不足分は作成
+        $tags = Tag::query()->whereIn('name', $names)->get(['id', 'name'])->keyBy('name');
+        $attachIds = [];
+        foreach ($names as $name) {
+          $attachIds[] = optional($tags[$name] ?? null)?->id ?? Tag::query()->create(['name' => $name])->id;
+        }
+        $q->tags()->sync($attachIds);
+      }
+    }
+
+    $q->load('tags:id,name');
+    return (new QuestionResource($q))->response()->setStatusCode(200);
   }
 }
