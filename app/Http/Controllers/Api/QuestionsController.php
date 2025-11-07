@@ -184,4 +184,12 @@ final class QuestionsController extends Controller
     $q->load('tags:id,name');
     return (new QuestionResource($q))->response()->setStatusCode(200);
   }
+
+  public function destroy(int $id)
+  {
+    $q = Question::query()->whereKey($id)->firstOrFail();
+    // 将来：$this->authorize('delete', $q);
+    $q->delete(); // SoftDeletes前提。物理削除なら forceDelete()
+    return response()->noContent(204);
+  }
 }

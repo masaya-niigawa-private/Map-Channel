@@ -80,4 +80,5 @@ Route::prefix('v1')->group(function () {
     Route::post('/questions/{id}/answers', [AnswersController::class, 'store']);
 
     Route::put('/questions/{id}', [QuestionsController::class, 'update']);
+    Route::delete('/questions/{id}', [QuestionsController::class, 'destroy']);
 });
