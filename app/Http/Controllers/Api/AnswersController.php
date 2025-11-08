@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AnswerStoreRequest;
+use App\Http\Requests\AnswerUpdateRequest;
 use App\Http\Resources\AnswerResource;
 use App\Models\Answer;
 use App\Models\Question;
@@ -33,5 +34,22 @@ final class AnswersController extends Controller
     return (new AnswerResource($ans))
       ->response()
       ->setStatusCode(201);
+  }
+
+  public function update(AnswerUpdateRequest $request, int $id)
+  {
+    $a = Answer::query()->whereKey($id)->firstOrFail();
+
+    // 将来の認可: $this->authorize('update', $a);
+
+    $input = $request->only(['body']);
+    foreach ($input as $k => $v) {
+      if (!is_null($v)) {
+        $a->{$k} = $v;
+      }
+    }
+    $a->save();
+
+    return (new AnswerResource($a))->response()->setStatusCode(200);
   }
 }

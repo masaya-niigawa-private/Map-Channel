@@ -81,4 +81,5 @@ Route::prefix('v1')->group(function () {
 
     Route::put('/questions/{id}', [QuestionsController::class, 'update']);
     Route::delete('/questions/{id}', [QuestionsController::class, 'destroy']);
+    Route::put('/answers/{id}', [AnswersController::class, 'update']);
 });
