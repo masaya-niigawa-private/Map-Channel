@@ -52,4 +52,12 @@ final class AnswersController extends Controller
 
     return (new AnswerResource($a))->response()->setStatusCode(200);
   }
+
+  public function destroy(int $id)
+  {
+    $a = Answer::query()->whereKey($id)->firstOrFail();
+    // 将来: $this->authorize('delete', $a);
+    $a->delete(); // SoftDeletes 前提。物理削除なら forceDelete()
+    return response()->noContent(204);
+  }
 }
