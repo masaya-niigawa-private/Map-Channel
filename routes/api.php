@@ -85,4 +85,5 @@ Route::prefix('v1')->group(function () {
     Route::delete('/answers/{id}', [AnswersController::class, 'destroy']);
 
     Route::put('/answers/{id}/best', [AnswersController::class, 'markBest']);
+    Route::put('/answers/{id}/upvote', [AnswersController::class, 'upvote']);
 });

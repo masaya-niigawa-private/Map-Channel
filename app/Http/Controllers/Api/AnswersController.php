@@ -84,6 +84,19 @@ final class AnswersController extends Controller
     return (new AnswerResource($answer))->response()->setStatusCode(200);
   }
 
+  // PUT /api/v1/answers/{id}/upvote
+  public function upvote(int $id)
+  {
+    $a = Answer::query()->whereKey($id)->firstOrFail();
+    // 将来: $this->authorize('upvote', $a);
+
+    // 単純に 1（将来ユーザー単位に制限する場合は別テーブルで管理）
+    $a->increment('upvotes_count');
+    $a->refresh();
+
+    return (new AnswerResource($a))->response()->setStatusCode(200);
+  }
+
   public function destroy(int $id)
   {
     $a = Answer::query()->whereKey($id)->firstOrFail();
