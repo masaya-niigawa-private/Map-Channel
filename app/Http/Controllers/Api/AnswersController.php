@@ -8,6 +8,7 @@ use App\Http\Requests\AnswerUpdateRequest;
 use App\Http\Resources\AnswerResource;
 use App\Models\Answer;
 use App\Models\Question;
+use Illuminate\Support\Facades\DB;
 
 final class AnswersController extends Controller
 {
@@ -51,6 +52,36 @@ final class AnswersController extends Controller
     $a->save();
 
     return (new AnswerResource($a))->response()->setStatusCode(200);
+  }
+
+  // PUT /api/v1/answers/{id}/best
+  public function markBest(int $id)
+  {
+    $answer = Answer::query()->whereKey($id)->firstOrFail();
+    // 将来の認可: $this->authorize('update', $answer->question);
+
+    DB::transaction(function () use ($answer) {
+      // 同じ質問の他のベストフラグを全て解除
+      Answer::where('question_id', $answer->question_id)
+        ->update(['is_best' => false]);
+
+      // この回答をベストに設定
+      $answer->is_best = true;
+      $answer->save();
+
+      // 質問側の状態も更新
+      $question = Question::query()->whereKey($answer->question_id)->first();
+      if ($question) {
+        $question->best_answer_id = $answer->id;
+        $question->is_resolved = true;
+        $question->save();
+      }
+    });
+
+    // 更新済みの状態を反映
+    $answer->refresh();
+
+    return (new AnswerResource($answer))->response()->setStatusCode(200);
   }
 
   public function destroy(int $id)
